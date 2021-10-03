@@ -128,6 +128,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+AUTH_USER_MODEL = 'api.User'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -146,5 +148,6 @@ REST_FRAMEWORK = {
     # #     'rest_framework.renderers.BrowsableAPIRenderer',
     # ]
 }
+
 
 CORS_ALLOW_ALL_ORIGINS = True
