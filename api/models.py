@@ -3,7 +3,15 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    pass
+    USER_CREATE_PASSWORD_RETYPE = True
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'emergency_contact_name', 'emergency_contact_phone']
+
+    def __repr__(self):
+        return f"<User username={self.username}>"
+
+    def __str__(self):
+        return self.username
 
 
 class Note(models.Model):
