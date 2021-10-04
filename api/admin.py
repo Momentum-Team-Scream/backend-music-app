@@ -12,4 +12,4 @@ class LessonAdmin(admin.ModelAdmin):
     
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'body', 'is_shared',]
+    list_display = ['pk', 'body',]
