@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +14,11 @@ class LessonViewSet(ListCreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        if self.request.user.is_instructor == True:
+            queryset = Lesson.objects.filter(author=self.request.user)
+        return queryset
+
     def get_serializer_class(self):
         serializer_class = self.serializer_class
         if self.request.method == 'GET':
@@ -21,15 +26,15 @@ class LessonViewSet(ListCreateAPIView):
         return serializer_class
         
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(author=self.request.user)
 
-class LessonDetailViewSet(RetrieveUpdateAPIView):
-    queryset = Lesson.objects.all()
-    serializer_class = ListLessonsSerializer
-    permission_classes = [IsAuthenticated]
+# class LessonDetailViewSet(RetrieveUpdateAPIView):
+#     queryset = Lesson.objects.all()
+#     serializer_class = ListLessonsSerializer
+#     permission_classes = [IsAuthenticated]
 
-    def get_serializer_class(self):
-        serializer_class = self.serializer_class
-        if self.request.method == 'PUT':
-            serializer_class = LessonSerializer
-        return serializer_class
+#     def get_serializer_class(self):
+#         serializer_class = self.serializer_class
+#         if self.request.method == 'PUT':
+#             serializer_class = LessonSerializer
+#         return serializer_class
