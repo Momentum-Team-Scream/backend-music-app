@@ -3,7 +3,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Lesson
-from .serializers import UserSerializer, LessonSerializer, ListLessonsSerializer
+from .serializers import UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -27,6 +27,16 @@ class LessonViewSet(ListCreateAPIView):
         
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+        
+class ProfileViewSet(RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = ProfileSerializer
+    
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+        if self.request.user.is_instructor == True:
+            serializer_class = ProfileSerializer
+        return serializer_class
 
 # class LessonDetailViewSet(RetrieveUpdateAPIView):
 #     queryset = Lesson.objects.all()
