@@ -24,8 +24,12 @@ class ListLessonsSerializer(serializers.ModelSerializer):
         fields = ("student", "lesson_date")
         
 class ProfileSerializer(serializers.ModelSerializer):
-    instructer = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    student = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email")
+        
+class StudentProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
