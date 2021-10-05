@@ -23,6 +23,7 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/users/', api_views.DjoserUserViewSet.as_view({'get': 'list'}), name='register-new-user'),
+    path('auth/users/me/', api_views.ProfileViewSet.as_view(), name='profile'),
     path('api/upcoming/', api_views.LessonViewSet.as_view(), name='lesson-list'),
     # path('api/lesson/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
     # path('api/lesson/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 

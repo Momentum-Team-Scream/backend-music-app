@@ -22,6 +22,18 @@ class ListLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("student", "lesson_date")
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email")
+        
+class StudentProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "email", "emergency_contact_name", "emergency_contact_phone")
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
