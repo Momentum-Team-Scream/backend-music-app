@@ -6,7 +6,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     USER_CREATE_PASSWORD_RETYPE = True
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'emergency_contact_name', 'emergency_contact_phone']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
     emergency_contact_name = models.CharField(max_length=255)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
@@ -21,17 +21,6 @@ class User(AbstractUser):
         return self.username
 
 
-class Note(models.Model):
-    body = models.TextField()
-    lesson = models.ForeignKey(
-        to="Lesson", on_delete=models.CASCADE, related_name="lesson_note")
-    is_assignment = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.body}"
-
-
 class Lesson(models.Model):
     lesson_date = models.DateTimeField(auto_now_add=False, auto_now=False)
     plan = models.TextField(blank=True, null=True)
@@ -43,3 +32,16 @@ class Lesson(models.Model):
 
     def __str__(self):
         return f"{self.lesson_date}"
+
+
+class Note(models.Model):
+    body = models.TextField()
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="note")
+    is_assignment = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.body}"
+
+
+
