@@ -27,4 +27,5 @@ urlpatterns = [
     # path('api/lesson/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
     # path('api/lesson/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     # path('api/lesson/<int:pk>/update/', api_views.LessonDetailViewSet.as_view(), name='lesson-update')
+    path('api/note/add/', api_views.AddNoteViewSet.as_view(), name='add-note')
 ]

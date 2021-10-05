@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Lesson, User
+from .models import Lesson, Note, User
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -22,3 +22,8 @@ class ListLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("student", "lesson_date")
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ('body', 'lesson', 'is_assignment', 'created_at')
