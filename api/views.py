@@ -21,7 +21,7 @@ class LessonViewSet(ListCreateAPIView):
         return serializer_class
         
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        serializer.save(author=self.request.user)
 
 class LessonDetailViewSet(RetrieveUpdateAPIView):
     queryset = Lesson.objects.all()
