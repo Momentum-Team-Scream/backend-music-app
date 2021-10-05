@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAuthenticated
-from .models import User, Lesson
-from .serializers import StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+
+from .models import User, Lesson, Note
+from .serializers import NoteSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -48,3 +49,12 @@ class ProfileViewSet(RetrieveUpdateAPIView):
 #         if self.request.method == 'PUT':
 #             serializer_class = LessonSerializer
 #         return serializer_class
+
+class AddNoteViewSet(ListCreateAPIView):
+    queryset = Note.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = NoteSerializer
+
+
+    def perform_create(self, serializer):
+        serializer.save()
