@@ -7,6 +7,10 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "email")
 
+class InstructorRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "email", "emergency_contact_name", "emergency_contact_phone")
 
 class LessonSerializer(serializers.ModelSerializer):
     student = serializers.SlugRelatedField(read_only=True, slug_field="username")
@@ -22,6 +26,11 @@ class ListLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("student", "lesson_date")
+
+class InstructorRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ()
         
 class ProfileSerializer(serializers.ModelSerializer):
     
