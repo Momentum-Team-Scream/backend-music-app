@@ -10,6 +10,12 @@ class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+        if self.request.user.is_instructor == True:
+            serializer_class = StudentProfileSerializer
+        return serializer_class
+
 class LessonViewSet(ListCreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
@@ -45,8 +51,6 @@ class ProfileViewSet(RetrieveUpdateAPIView):
             serializer_class = ProfileSerializer
         return serializer_class
 
-    
-
 class LessonDetailViewSet(RetrieveUpdateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = ListLessonsSerializer
@@ -57,7 +61,6 @@ class LessonDetailViewSet(RetrieveUpdateAPIView):
     #     if self.request.method == 'PUT':
     #         serializer_class = LessonSerializer
     #     return serializer_class
-
 
 class AddNoteViewSet(ListCreateAPIView):
     queryset = Note.objects.all()

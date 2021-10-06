@@ -4,11 +4,11 @@ from .models import User, Lesson, Note
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['username', 'first_name', 'last_name', 'is_instructor']
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'lesson_date', 'student',]
+    list_display = ['pk', 'lesson_date', 'student', 'plan']
     
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
