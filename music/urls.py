@@ -16,9 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api import views as api_views
+from rest_framework.routers import SimpleRouter
+
+router = SimpleRouter()
+router.register(r'note', api_views.NoteViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("api/", include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
@@ -28,5 +33,5 @@ urlpatterns = [
     path('api/lesson/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
     path('api/lesson/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     # path('api/lesson/<int:pk>/update/', api_views.LessonDetailViewSet.as_view(), name='lesson-update')
-    path('api/note/add/', api_views.AddNoteViewSet.as_view(), name='add-note')
+    # path('api/note/', api_views.NoteViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy', 'get': 'list', 'post': 'create'}), name='note')
 ]
