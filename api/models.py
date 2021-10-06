@@ -26,7 +26,8 @@ class User(AbstractUser):
 
 
 class Lesson(models.Model):
-    lesson_date = models.DateTimeField(auto_now_add=False, auto_now=False)
+    lesson_date = models.DateField(auto_now_add=False, auto_now=False)
+    lesson_time = models.TimeField(auto_now_add=False, auto_now=False)
     plan = models.TextField(blank=True, null=True)
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lesson')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lessons')

@@ -4,6 +4,7 @@ from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUp
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
+from .permissions import IsLessonOwner
 from .models import User, Lesson, Note
 from .serializers import NoteSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
@@ -41,7 +42,12 @@ class LessonViewSet(ListCreateAPIView):
         
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-        
+
+class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated, IsLessonOwner]
+
 class ProfileViewSet(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = StudentProfileSerializer
@@ -52,17 +58,6 @@ class ProfileViewSet(RetrieveUpdateAPIView):
             serializer_class = ProfileSerializer
         return serializer_class
 
-class LessonDetailViewSet(RetrieveUpdateAPIView):
-    queryset = Lesson.objects.all()
-    serializer_class = ListLessonsSerializer
-    permission_classes = [IsAuthenticated]
-    
-    # def get_serializer_class(self):
-    #     serializer_class = self.serializer_class
-    #     if self.request.method == 'PUT':
-    #         serializer_class = LessonSerializer
-    #     return serializer_class
-    
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     permission_classes = [IsAuthenticated]
