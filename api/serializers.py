@@ -41,10 +41,17 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
+    lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
 
     def combined_student_name (self, obj):
         student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
         return student_name
+    
+    def combined_lesson_date_time (self, obj):
+        date = obj.lesson_date
+        time = obj.lesson_time
+        lesson_date = '{} at {}'.format(date.strftime("%b. %d, %Y"), time.strftime("%I:%M %p"))
+        return lesson_date
     class Meta:
         model = Lesson
         fields = ("student_name", "lesson_date")
