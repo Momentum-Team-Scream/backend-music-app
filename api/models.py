@@ -11,7 +11,7 @@ class User(AbstractUser):
     emergency_contact_name = models.CharField(max_length=255)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     emergency_contact_phone =  models.CharField(validators=[phone_regex], max_length=17) 
-    # instructor = models.ForeignKey('self', null=True, related_name='employee')
+    #instructor = models.ForeignKey('studio', on_delete=models.CASCADE, related_name='instructor')
     is_instructor = models.BooleanField(default=True)
 
     def __repr__(self):
