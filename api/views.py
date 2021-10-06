@@ -3,6 +3,7 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
+from datetime import date
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import User, Lesson, Note
@@ -29,7 +30,7 @@ class LessonViewSet(ListCreateAPIView):
 
     def get_queryset(self):
         if self.request.user.is_instructor == True:
-            queryset = Lesson.objects.filter(author=self.request.user)
+            queryset = Lesson.objects.filter(author=self.request.user, lesson_date=date.today())
         if self.request.user.is_instructor == False:
             queryset = Lesson.objects.filter(student=self.request.user)
         return queryset
