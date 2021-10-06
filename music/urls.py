@@ -30,8 +30,6 @@ urlpatterns = [
     path('auth/users/', api_views.DjoserUserViewSet.as_view({'get': 'list'}), name='register-new-user'),
     path('auth/users/me/', api_views.ProfileViewSet.as_view(), name='profile'),
     path('api/upcoming/', api_views.LessonViewSet.as_view(), name='lesson-list'),
-    path('api/lesson/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
-    path('api/lesson/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
-    # path('api/lesson/<int:pk>/update/', api_views.LessonDetailViewSet.as_view(), name='lesson-update')
-    # path('api/note/', api_views.NoteViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy', 'get': 'list', 'post': 'create'}), name='note')
+    path('api/lessons/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
+    path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
 ]

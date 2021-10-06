@@ -7,21 +7,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "email")
 
-
-class LessonSerializer(serializers.ModelSerializer):
-    student = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    lesson_date = serializers.DateTimeField(format='%b. %d at %I:%M %p')
+class InstructorRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Lesson
-        fields = ("lesson_date", "student", "author", "created_at")
+        model = User
+        fields = ("username", "email", "emergency_contact_name", "emergency_contact_phone")
 
-class ListLessonsSerializer(serializers.ModelSerializer):
-    student = serializers.SlugRelatedField(read_only=True, slug_field="last_name")
-    lesson_date = serializers.DateTimeField(format='%b. %d at %I:%M %p')
-    class Meta:
-        model = Lesson
-        fields = ("student", "lesson_date")
         
 class ProfileSerializer(serializers.ModelSerializer):
     
@@ -39,3 +29,22 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ('body', 'lesson', 'is_assignment', 'created_at')
+
+class LessonSerializer(serializers.ModelSerializer):
+    student = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    note = NoteSerializer (many=True, read_only=True)
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    class Meta:
+        model = Lesson
+        fields = ("lesson_date", "student", "author", "created_at", "note")
+
+class ListLessonsSerializer(serializers.ModelSerializer):
+    student_name = serializers.SerializerMethodField('combined_student_name')
+
+    def combined_student_name (self, obj):
+        student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
+        return student_name
+    class Meta:
+        model = Lesson
+        fields = ("student_name", "lesson_date")

@@ -8,8 +8,12 @@ class User(AbstractUser):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
-    emergency_contact_name = models.CharField(max_length=255)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+
+    first_name = models.CharField(max_length=255, blank=False, null=False)
+    last_name = models.CharField(max_length=255, blank=False, null=False)
+    phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) 
+    emergency_contact_name = models.CharField(max_length=255)
     emergency_contact_phone =  models.CharField(validators=[phone_regex], max_length=17) 
     #instructor = models.ForeignKey('studio', on_delete=models.CASCADE, related_name='instructor')
     is_instructor = models.BooleanField(default=True)
@@ -22,7 +26,8 @@ class User(AbstractUser):
 
 
 class Lesson(models.Model):
-    lesson_date = models.DateTimeField(auto_now_add=False, auto_now=False)
+    lesson_date = models.DateField(auto_now_add=False, auto_now=False)
+    lesson_time = models.TimeField(auto_now_add=False, auto_now=False)
     plan = models.TextField(blank=True, null=True)
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lesson')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lessons')
