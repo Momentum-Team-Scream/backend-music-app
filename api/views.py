@@ -4,7 +4,7 @@ from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUp
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from .permissions import IsLessonOwner
+from .permissions import IsInstructorAndLessonOwner
 from .models import User, Lesson, Note
 from .serializers import NoteSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
@@ -46,7 +46,7 @@ class LessonViewSet(ListCreateAPIView):
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsLessonOwner]
+    permission_classes = [IsAuthenticated, IsInstructorAndLessonOwner]
 
 class ProfileViewSet(RetrieveUpdateAPIView):
     queryset = User.objects.all()

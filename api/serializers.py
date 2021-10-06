@@ -37,7 +37,7 @@ class LessonSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
     class Meta:
         model = Lesson
-        fields = ("lesson_date", "student", "author", "created_at", "note")
+        fields = ("lesson_date", "lesson_time", "student", "author", "created_at", "note")
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
