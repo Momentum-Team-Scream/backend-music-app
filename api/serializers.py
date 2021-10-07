@@ -56,4 +56,23 @@ class ListLessonsSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ("student_name", "lesson_date")
         
+<<<<<<< HEAD
 
+=======
+class StudioSerializer(serializers.ModelSerializer):
+    students = UserSerializer(many=True, read_only=True)
+    studio_instructor = UserSerializer(many=False, read_only=True)
+    class Meta:
+        model = User
+        fields = ("is_instructor", "instructor")
+        
+    def create_studio(self, validated_data):
+        User = self.model 
+        studio = User.objects.all()
+        if User.instructor(validated_data) == True:
+            User = self.studio_instructor
+        else:
+            User = self.students     
+            
+        return studio(**validated_data)
+>>>>>>> origin/student-list-model
