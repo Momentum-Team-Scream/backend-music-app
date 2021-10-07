@@ -32,7 +32,7 @@ class Lesson(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='lessons')
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     class Meta:
-        ordering = ['lesson_date']
+        ordering = ['lesson_date', 'lesson_time']
 
     def __str__(self):
         return f"{self.lesson_date}"
