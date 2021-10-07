@@ -1,4 +1,5 @@
 from rest_framework import serializers
+import djoser
 from .models import Lesson, Note, User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -55,3 +56,8 @@ class ListLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("student_name", "lesson_date")
+
+# class LoginSerializer(djoser.serializers.UserSerializer):
+#     class Meta:
+#         model = User
+#         fields = ("token", "is_instructor")
