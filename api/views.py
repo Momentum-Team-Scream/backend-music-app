@@ -37,12 +37,14 @@ class LessonViewSet(ListCreateAPIView):
     def get_queryset(self):
         if self.request.user.is_instructor == True:
             queryset = Lesson.objects.filter(author=self.request.user, lesson_date=date.today())
+            # breakpoint()
         if self.request.user.is_instructor == False:
             queryset = Lesson.objects.filter(student=self.request.user)
         return queryset
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
+        queryset = self.queryset
         if self.request.method == 'GET':
             serializer_class = ListLessonsSerializer
         # if self.request.method == 'GET' and self.request.user.is_instructor == False:

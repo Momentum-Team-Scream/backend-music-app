@@ -40,9 +40,26 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ("pk", "lesson_date", "lesson_time", "plan", "student", "author", "created_at", "note")
 
+## Example of how to create a hyperlink related field
+# class AccountSerializer(serializers.HyperlinkedModelSerializer):
+#     url = serializers.HyperlinkedIdentityField(
+#         view_name='accounts',
+#         lookup_field='slug'
+#     )
+#     users = serializers.HyperlinkedRelatedField(
+#         view_name='user-detail',
+#         lookup_field='username',
+#         many=True,
+#         read_only=True
+#     )
+
+#     class Meta:
+#         model = Account
+#         fields = ['url', 'account_name', 'users', 'created']
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
     lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
+    pk = serializers.HyperlinkedRelatedField(view_name='lesson-detail', read_only=True)
 
     def combined_student_name (self, obj):
         student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
