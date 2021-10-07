@@ -1,11 +1,15 @@
+from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import date
+from django.http import JsonResponse, HttpResponse
+from rest_framework.decorators import api_view, permission_classes
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import User, Lesson, Note
@@ -82,3 +86,18 @@ class NoteViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+# Listing Instructor Studio
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_students(request):
+    if not (request.user.is_authenticated and request.user.is_instructor):
+        return HttpResponse(status=403) 
+    students = request.user.students.all()
+    output = {}
+    output["instructor"] = UserSerializer(request.user).data
+    output["students"] = []
+    for student in students:
+        serializer = StudentProfileSerializer(student)
+        output["students"].append(serializer.data)
+    return JsonResponse(output)
+    

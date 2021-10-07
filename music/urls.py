@@ -32,4 +32,5 @@ urlpatterns = [
     path('api/upcoming/', api_views.LessonViewSet.as_view(), name='lesson-list'),
     path('api/lessons/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
     path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
+    path('instructor/studio/', api_views.list_students, name='instructor-studio'),
 ]
