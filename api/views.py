@@ -1,9 +1,12 @@
+from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from datetime import date
+from django.http import JsonResponse, HttpResponse
+from rest_framework.decorators import action
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import User, Lesson, Note
@@ -59,6 +62,15 @@ class ProfileViewSet(RetrieveUpdateAPIView):
             serializer_class = ProfileSerializer
         return serializer_class
 
+    @action(detail=False)
+    def list_students(self):
+        if not self.request.user.is_instructor:
+            return HttpResponse(403)
+        students = self.request.user.students.all()
+        output = []
+        for student in students:
+            output.append(student)
+        return JsonResponse({list:output})
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     permission_classes = [IsAuthenticated]

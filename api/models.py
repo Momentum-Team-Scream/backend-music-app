@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
+from django.db.models.deletion import CASCADE
 
 
 class User(AbstractUser):
@@ -15,7 +16,7 @@ class User(AbstractUser):
     phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) 
     emergency_contact_name = models.CharField(max_length=255)
     emergency_contact_phone =  models.CharField(validators=[phone_regex], max_length=17) 
-    # instructor = models.ForeignKey('self', null=True, related_name='employee')
+    instructor = models.ForeignKey('self', null=True, on_delete=CASCADE, related_name='students')
     is_instructor = models.BooleanField(default=True)
 
     def __repr__(self):
