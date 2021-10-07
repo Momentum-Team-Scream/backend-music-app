@@ -149,6 +149,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ],
     'DATE_INPUT_FORMATS': ['iso-8601'],
+    # 'SERIALIZERS': {
+    #         'token': 'api.serializers.LoginSerializer',
+    # }
 }
 
 
