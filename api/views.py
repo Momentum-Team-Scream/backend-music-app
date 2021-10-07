@@ -5,6 +5,8 @@ from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIVie
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework import status
 from datetime import date
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
@@ -43,10 +45,22 @@ class LessonViewSet(ListCreateAPIView):
         serializer_class = self.serializer_class
         if self.request.method == 'GET':
             serializer_class = ListLessonsSerializer
+        # if self.request.method == 'GET' and self.request.user.is_instructor == False:
+        #     serializer_class = ListLessonsSerializer
+        if self.request.method == 'POST':
+            serializer_class = LessonSerializer
         return serializer_class
         
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+    
+    def put(self, request, pk, format=None):
+        lesson = self.get_object(pk)
+        serializer = LessonSerializer(lesson, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
