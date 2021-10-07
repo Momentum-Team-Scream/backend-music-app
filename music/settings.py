@@ -148,7 +148,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
     ],
+    'DATE_INPUT_FORMATS': ['iso-8601'],
 }
+
 
 
 CORS_ALLOW_ALL_ORIGINS = True

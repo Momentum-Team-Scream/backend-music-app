@@ -15,7 +15,6 @@ class User(AbstractUser):
     phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) 
     emergency_contact_name = models.CharField(max_length=255)
     emergency_contact_phone =  models.CharField(validators=[phone_regex], max_length=17) 
-    # instructor = models.ForeignKey('self', null=True, related_name='employee')
     is_instructor = models.BooleanField(default=True)
 
     def __repr__(self):

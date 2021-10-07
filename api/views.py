@@ -39,6 +39,8 @@ class LessonViewSet(ListCreateAPIView):
         serializer_class = self.serializer_class
         if self.request.method == 'GET':
             serializer_class = ListLessonsSerializer
+        if self.request.method == 'POST':
+            serializer_class = LessonSerializer
         return serializer_class
         
     def perform_create(self, serializer):

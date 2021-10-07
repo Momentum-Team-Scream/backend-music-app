@@ -31,13 +31,13 @@ class NoteSerializer(serializers.ModelSerializer):
         fields = ('body', 'lesson', 'is_assignment', 'created_at')
 
 class LessonSerializer(serializers.ModelSerializer):
-    student = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    author = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    student = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.filter(is_instructor=False))
+    author = serializers.SlugRelatedField(slug_field="username", read_only=True)
     note = NoteSerializer (many=True, read_only=True)
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
     class Meta:
         model = Lesson
-        fields = ("lesson_date", "lesson_time", "student", "author", "created_at", "note")
+        fields = ("lesson_date", "lesson_time", "plan", "student", "author", "created_at", "note")
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
