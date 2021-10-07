@@ -23,7 +23,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email", "emergency_contact_name", "emergency_contact_phone")
+        fields = ("pk", "first_name", "last_name", "email", "emergency_contact_name", "emergency_contact_phone")
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
