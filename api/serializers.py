@@ -38,7 +38,7 @@ class LessonSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
     class Meta:
         model = Lesson
-        fields = ("lesson_date", "lesson_time", "plan", "student", "author", "created_at", "note")
+        fields = ("pk", "lesson_date", "lesson_time", "plan", "student", "author", "created_at", "note")
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
@@ -53,9 +53,10 @@ class ListLessonsSerializer(serializers.ModelSerializer):
         time = obj.lesson_time
         lesson_date = '{} at {}'.format(date.strftime("%b. %d, %Y"), time.strftime("%I:%M %p"))
         return lesson_date
+
     class Meta:
         model = Lesson
-        fields = ("student_name", "lesson_date")
+        fields = ("pk", "student_name", "lesson_date")
 
 # class LoginSerializer(djoser.serializers.UserSerializer):
 #     class Meta:
