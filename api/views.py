@@ -62,15 +62,6 @@ class ProfileViewSet(RetrieveUpdateAPIView):
             serializer_class = ProfileSerializer
         return serializer_class
 
-    @action(detail=False)
-    def list_students(self):
-        if not self.request.user.is_instructor:
-            return HttpResponse(403)
-        students = self.request.user.students.all()
-        output = []
-        for student in students:
-            output.append(student)
-        return JsonResponse({list:output})
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     permission_classes = [IsAuthenticated]
@@ -80,3 +71,12 @@ class NoteViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+
+def list_students(request):
+    if not (request.user.is_authenticated and request.user.is_instructor):
+        return HttpResponse(status=403)
+    students = request.user.students.all()
+    output = []
+    for student in students:
+        output.append(student)
+    return JsonResponse({list:output})
