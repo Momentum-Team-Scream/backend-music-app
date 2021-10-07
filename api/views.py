@@ -51,8 +51,8 @@ class LessonViewSet(ListCreateAPIView):
         serializer.save(author=self.request.user)
     
     def put(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user, data=request.data)
+        lesson = self.get_object(pk)
+        serializer = LessonSerializer(lesson, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
