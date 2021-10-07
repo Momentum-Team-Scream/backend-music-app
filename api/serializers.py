@@ -55,4 +55,5 @@ class ListLessonsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("student_name", "lesson_date")
+        
 
