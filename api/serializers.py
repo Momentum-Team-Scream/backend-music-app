@@ -1,6 +1,6 @@
 from rest_framework import serializers
 import djoser
-from .models import Lesson, Note, User
+from .models import Lesson, Note, PracticeLog, User
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -99,3 +99,10 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "email", 
             "emergency_contact_name",
             "emergency_contact_phone")
+
+class PracticeLogSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    author = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    class Meta:
+        model = PracticeLog
+        fields = ("pk", "time_practiced", "body", "created_at", "author")

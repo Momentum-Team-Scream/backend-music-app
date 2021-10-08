@@ -11,8 +11,8 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 
 from .permissions import IsInstructorAndLessonOwner
-from .models import User, Lesson, Note
-from .serializers import NoteSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+from .models import PracticeLog, User, Lesson, Note
+from .serializers import NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -102,3 +102,10 @@ def list_students(request):
         output["students"].append(serializer.data)
     return JsonResponse(output)
     
+class PracticeLogViewSet(ModelViewSet):
+    queryset = PracticeLog.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = PracticeLogSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
