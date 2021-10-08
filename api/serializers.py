@@ -21,10 +21,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ("first_name", "last_name", "email")
         
 class StudentProfileSerializer(serializers.ModelSerializer):
-    
+    username = serializers.HyperlinkedRelatedField(many=True, view_name='public-profile', lookup_field='username', read_only=True)
     class Meta:
         model = User
-        fields = ("pk", "first_name", "last_name", "email", "emergency_contact_name", "emergency_contact_phone")
+        fields = ("pk", "first_name", "last_name", "username", "email", "emergency_contact_name", "emergency_contact_phone")
 
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,6 +47,20 @@ class ListLessonsSerializer(serializers.ModelSerializer):
     def combined_student_name (self, obj):
         student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
         return student_name
+        
+    def combined_lesson_date_time (self, obj):
+        date = obj.lesson_date
+        time = obj.lesson_time
+        lesson_date = '{} at {}'.format(date.strftime("%b. %d, %Y"), time.strftime("%I:%M %p"))
+        return lesson_date
+    class Meta:
+        model = Lesson
+        fields = ("pk", "student_name", "lesson_date")
+
+
+class StudentLessonSerializer(serializers.ModelSerializer):
+    lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
+    note = NoteSerializer (many=True, read_only=True)
     
     def combined_lesson_date_time (self, obj):
         date = obj.lesson_date
@@ -56,9 +70,29 @@ class ListLessonsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ("pk", "student_name", "lesson_date")
+        fields = ("pk", "lesson_date", "note")
 
 # class LoginSerializer(djoser.serializers.UserSerializer):
 #     class Meta:
 #         model = User
 #         fields = ("token", "is_instructor")
+
+
+## Example of how to create a hyperlink related field
+# class AccountSerializer(serializers.HyperlinkedModelSerializer):
+#     url = serializers.HyperlinkedIdentityField(
+#         view_name='accounts',
+#         lookup_field='slug'
+#     )
+#     users = serializers.HyperlinkedRelatedField(
+#         view_name='user-detail',
+#         lookup_field='username',
+#         many=True,
+#         read_only=True
+#     )
+
+#     class Meta:
+#         model = Account
+#         fields = ['url', 'account_name', 'users', 'created']
+
+    

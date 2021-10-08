@@ -33,4 +33,5 @@ urlpatterns = [
     path('api/lessons/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
     path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     path('instructor/studio/', api_views.list_students, name='instructor-studio'),
+    # path('auth/users/<str:username>', api_views.  , name="public-profile"),
 ]

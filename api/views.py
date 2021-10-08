@@ -13,11 +13,16 @@ from rest_framework.decorators import api_view, permission_classes
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import User, Lesson, Note
-from .serializers import NoteSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+from .serializers import NoteSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        if self.request.user.username is not User.objects.username:
+            queryset = User.objects.all()
+        return queryset
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
@@ -30,15 +35,11 @@ class LessonViewSet(ListCreateAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        # breakpoint()
-        return super().create(request, *args, **kwargs)
-
     def get_queryset(self):
         if self.request.user.is_instructor == True:
             queryset = Lesson.objects.filter(author=self.request.user, lesson_date=date.today())
         if self.request.user.is_instructor == False:
-            queryset = Lesson.objects.filter(student=self.request.user)
+            queryset = Lesson.objects.filter(student=self.request.user).order_by('-lesson_date', '-lesson_time')
         return queryset
 
     def get_serializer_class(self):
@@ -49,6 +50,8 @@ class LessonViewSet(ListCreateAPIView):
         #     serializer_class = ListLessonsSerializer
         if self.request.method == 'POST':
             serializer_class = LessonSerializer
+        if self.request.user.is_instructor == False:
+            serializer_class = StudentLessonSerializer
         return serializer_class
         
     def perform_create(self, serializer):
@@ -97,7 +100,7 @@ def list_students(request):
     output["instructor"] = UserSerializer(request.user).data
     output["students"] = []
     for student in students:
-        serializer = StudentProfileSerializer(student)
+        serializer = StudentProfileSerializer(student, context={'request': request})
         output["students"].append(serializer.data)
     return JsonResponse(output)
     
