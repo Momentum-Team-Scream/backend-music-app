@@ -1,9 +1,8 @@
 from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.serializers import Serializer
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,11 +12,12 @@ from rest_framework.decorators import api_view, permission_classes
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import User, Lesson, Note
-from .serializers import NoteSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+from .serializers import NoteSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
@@ -25,30 +25,32 @@ class UserViewSet(DjoserUserViewSet):
             serializer_class = StudentProfileSerializer
         return serializer_class
 
+class SharedProfileViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+
 class LessonViewSet(ListCreateAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        # breakpoint()
-        return super().create(request, *args, **kwargs)
-
     def get_queryset(self):
         if self.request.user.is_instructor == True:
             queryset = Lesson.objects.filter(author=self.request.user, lesson_date=date.today())
         if self.request.user.is_instructor == False:
-            queryset = Lesson.objects.filter(student=self.request.user)
+            queryset = Lesson.objects.filter(student=self.request.user).order_by('-lesson_date', '-lesson_time')
         return queryset
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
         if self.request.method == 'GET':
             serializer_class = ListLessonsSerializer
-        # if self.request.method == 'GET' and self.request.user.is_instructor == False:
-        #     serializer_class = ListLessonsSerializer
         if self.request.method == 'POST':
             serializer_class = LessonSerializer
+        if self.request.user.is_instructor == False:
+            serializer_class = StudentLessonSerializer
         return serializer_class
         
     def perform_create(self, serializer):
@@ -82,7 +84,6 @@ class NoteViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = NoteSerializer
 
-
     def perform_create(self, serializer):
         serializer.save()
 
@@ -97,7 +98,7 @@ def list_students(request):
     output["instructor"] = UserSerializer(request.user).data
     output["students"] = []
     for student in students:
-        serializer = StudentProfileSerializer(student)
+        serializer = StudentProfileSerializer(student, context={'request': request})
         output["students"].append(serializer.data)
     return JsonResponse(output)
     
