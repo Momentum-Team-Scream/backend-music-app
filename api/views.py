@@ -27,7 +27,7 @@ class UserViewSet(DjoserUserViewSet):
 
 class SharedProfileViewSet(ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = ProfileSerializer
+    serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
 
 
