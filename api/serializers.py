@@ -18,10 +18,10 @@ class ProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email")
+        fields = ("first_name", "last_name", "email", "username", "emergency_contact_name", 'emergency_contact_phone')
         
 class StudentProfileSerializer(serializers.ModelSerializer):
-    username = serializers.HyperlinkedRelatedField(many=True, view_name='public-profile', lookup_field='username', read_only=True)
+    pk = serializers.HyperlinkedRelatedField(view_name='shared-profile', read_only=True)
     class Meta:
         model = User
         fields = ("pk", "first_name", "last_name", "username", "email", "emergency_contact_name", "emergency_contact_phone")
@@ -71,28 +71,4 @@ class StudentLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("pk", "lesson_date", "note")
-
-# class LoginSerializer(djoser.serializers.UserSerializer):
-#     class Meta:
-#         model = User
-#         fields = ("token", "is_instructor")
-
-
-## Example of how to create a hyperlink related field
-# class AccountSerializer(serializers.HyperlinkedModelSerializer):
-#     url = serializers.HyperlinkedIdentityField(
-#         view_name='accounts',
-#         lookup_field='slug'
-#     )
-#     users = serializers.HyperlinkedRelatedField(
-#         view_name='user-detail',
-#         lookup_field='username',
-#         many=True,
-#         read_only=True
-#     )
-
-#     class Meta:
-#         model = Account
-#         fields = ['url', 'account_name', 'users', 'created']
-
     
