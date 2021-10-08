@@ -18,7 +18,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ("first_name", "last_name", "email", "username", "emergency_contact_name", 'emergency_contact_phone')
+        fields = (
+            "first_name", 
+            "last_name", 
+            "email", 
+            "username", 
+            "emergency_contact_name", 
+            'emergency_contact_phone')
 
 class NoteSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
@@ -37,9 +43,18 @@ class LessonSerializer(serializers.ModelSerializer):
     def combined_student_name (self, obj):
         student = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
         return student
+
     class Meta:
         model = Lesson
-        fields = ("pk", "lesson_date", "lesson_time", "plan", "student", "author", "created_at", "note")
+        fields = (
+            "pk", 
+            "lesson_date", 
+            "lesson_time", 
+            "plan", 
+            "student", 
+            "author", 
+            "created_at", 
+            "note")
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
@@ -74,7 +89,13 @@ class StudentLessonSerializer(serializers.ModelSerializer):
         fields = ("pk", "lesson_date", "note")
     
 class StudentProfileSerializer(serializers.ModelSerializer):
-    upcoming_lessons = ListLessonsSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ("pk", "first_name", "last_name", "username", "email", "emergency_contact_name", "emergency_contact_phone", "upcoming_lessons")
+        fields = (
+            "pk", 
+            "first_name", 
+            "last_name", 
+            "username", 
+            "email", 
+            "emergency_contact_name",
+            "emergency_contact_phone")
