@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import MaxLengthValidator, MinLengthValidator, MinValueValidator, RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 
@@ -49,4 +49,14 @@ class Note(models.Model):
         return f"{self.body}"
 
 
+class PracticeLog(models.Model):
+    body = models.TextField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name='practice')
+    time_practiced = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True,)
 
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.body}"
