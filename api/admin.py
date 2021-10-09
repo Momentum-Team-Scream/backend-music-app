@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Lesson, Note
+from .models import PracticeLog, User, Lesson, Note
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -13,3 +13,7 @@ class LessonAdmin(admin.ModelAdmin):
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
     list_display = ['pk', 'body']
+
+@admin.register(PracticeLog)
+class PracticeAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'body', 'author', 'created_at']
