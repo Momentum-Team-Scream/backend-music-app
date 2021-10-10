@@ -8,11 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ("username", "email")
 
-class InstructorRegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("username", "email", "emergency_contact_name", "emergency_contact_phone")
-
         
 class ProfileSerializer(serializers.ModelSerializer):
     
@@ -21,8 +16,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = (
             "first_name", 
             "last_name", 
+            "username",
             "email", 
-            "username", 
+            "phone", 
             "emergency_contact_name", 
             'emergency_contact_phone')
 
@@ -96,7 +92,8 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "first_name", 
             "last_name", 
             "username", 
-            "email", 
+            "email",
+            "phone", 
             "emergency_contact_name",
             "emergency_contact_phone")
 

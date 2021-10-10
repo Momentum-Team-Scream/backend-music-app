@@ -1,7 +1,7 @@
 from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -64,10 +64,29 @@ class LessonViewSet(ListCreateAPIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# #Lists student lessons for instructor to view (in the works)
+
+# class LessonListProfileViewSet(ListAPIView):
+#     queryset = Lesson.objects.all()
+#     serializer_class = ListLessonsSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get_queryset(self):
+#         student = User.objects.filter(is_instructor=False, pk=some way to reference the student user they are looking at)
+#         if self.request.user.is_instructor == True:
+#             queryset = Lesson.objects.filter(student).order_by('-lesson_date', '-lesson_time')
+#         return queryset
+    
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated, IsInstructorAndLessonOwner]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 class ProfileViewSet(RetrieveUpdateAPIView):
     queryset = User.objects.all()
