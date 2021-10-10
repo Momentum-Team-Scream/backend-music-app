@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import PracticeLog, User, Lesson, Note
-from .serializers import NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -33,7 +33,7 @@ class SharedProfileViewSet(ModelViewSet):
 
 class LessonViewSet(ListCreateAPIView):
     queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
+    serializer_class = AddLessonSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -48,7 +48,7 @@ class LessonViewSet(ListCreateAPIView):
         if self.request.method == 'GET':
             serializer_class = ListLessonsSerializer
         if self.request.method == 'POST':
-            serializer_class = LessonSerializer
+            serializer_class = AddLessonSerializer
         if self.request.user.is_instructor == False:
             serializer_class = StudentLessonSerializer
         return serializer_class

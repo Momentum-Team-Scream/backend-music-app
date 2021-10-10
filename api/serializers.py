@@ -3,14 +3,12 @@ import djoser
 from .models import Lesson, Note, PracticeLog, User
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ("username", "email")
 
         
 class ProfileSerializer(serializers.ModelSerializer):
-    
     class Meta:
         model = User
         fields = (
@@ -27,6 +25,16 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ('body', 'lesson', 'is_assignment', 'created_at')
+
+class AddLessonSerializer(serializers.ModelSerializer):
+    lesson_date = serializers.DateField("%b. %d, %Y")
+    lesson_time = serializers.TimeField("%I:%M %p")
+    author = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    class Meta:
+        model = Lesson
+        fields = '__all__'
+
 
 class LessonSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField('combined_student_name')
