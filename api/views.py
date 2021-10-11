@@ -131,11 +131,11 @@ class PracticeLogViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class DocumentCreateView(ModelViewSet):
-    queryset = Document.objects.all()
+# class DocumentCreateView(ModelViewSet):
+#     queryset = Document.objects.all()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        documents = Document.objects.all()
-        context['documents'] = documents
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         documents = Document.objects.all()
+#         context['documents'] = documents
+#         return context
