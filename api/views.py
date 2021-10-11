@@ -1,7 +1,7 @@
 from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -9,9 +9,10 @@ from rest_framework import status
 from datetime import date
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
+from django.urls import reverse_lazy
 
 from .permissions import IsInstructorAndLessonOwner
-from .models import PracticeLog, User, Lesson, Note
+from .models import Document, PracticeLog, User, Lesson, Note
 from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
@@ -128,3 +129,13 @@ class PracticeLogViewSet(ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+class DocumentCreateView(ModelViewSet):
+    queryset = Document.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        documents = Document.objects.all()
+        context['documents'] = documents
+        return context

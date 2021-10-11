@@ -1,6 +1,6 @@
 from rest_framework import serializers
 import djoser
-from .models import Lesson, Note, PracticeLog, User
+from .models import Document, Lesson, Note, PracticeLog, User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,7 +24,7 @@ class NoteSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
     class Meta:
         model = Note
-        fields = ('body', 'lesson', 'is_assignment', 'created_at')
+        fields = ('pk', 'body', 'lesson', 'is_assignment', 'created_at')
 
 class AddLessonSerializer(serializers.ModelSerializer):
     lesson_date = serializers.DateField("%b. %d, %Y")
@@ -111,3 +111,9 @@ class PracticeLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = PracticeLog
         fields = ("pk", "time_practiced", "body", "created_at", "author")
+
+
+class DocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Document
+        fields = '__all__'
