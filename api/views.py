@@ -66,19 +66,18 @@ class LessonViewSet(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# #Lists student lessons for instructor to view (in the works)
+#Lists student lessons for instructor to view (in the works)
+class StudentLessonsListViewSet(ListAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = StudentLessonSerializer
+    permission_classes = [IsAuthenticated]
 
-# class LessonListProfileViewSet(ListAPIView):
-#     queryset = Lesson.objects.all()
-#     serializer_class = ListLessonsSerializer
-#     permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time')
+        return queryset
 
-#     def get_queryset(self):
-#         student = User.objects.filter(is_instructor=False, pk=some way to reference the student user they are looking at)
-#         if self.request.user.is_instructor == True:
-#             queryset = Lesson.objects.filter(student).order_by('-lesson_date', '-lesson_time')
-#         return queryset
     
+
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
@@ -131,11 +130,11 @@ class PracticeLogViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-class DocumentCreateView(ModelViewSet):
-    queryset = Document.objects.all()
+# class DocumentCreateView(ModelViewSet):
+#     queryset = Document.objects.all()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        documents = Document.objects.all()
-        context['documents'] = documents
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         documents = Document.objects.all()
+#         context['documents'] = documents
+#         return context

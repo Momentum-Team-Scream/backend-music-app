@@ -4,7 +4,7 @@ from .models import PracticeLog, User, Lesson, Note
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username', 'first_name', 'last_name', 'is_instructor']
+    list_display = ['pk', 'username', 'first_name', 'last_name', 'is_instructor']
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
@@ -12,7 +12,7 @@ class LessonAdmin(admin.ModelAdmin):
     
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'body']
+    list_display = ['pk', 'body', 'created_at']
 
 @admin.register(PracticeLog)
 class PracticeAdmin(admin.ModelAdmin):

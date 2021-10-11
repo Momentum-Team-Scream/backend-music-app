@@ -32,6 +32,7 @@ urlpatterns = [
     path('auth/users/me/', api_views.ProfileViewSet.as_view(), name='profile'),
     path('api/upcoming/', api_views.LessonViewSet.as_view(), name='lesson-list'),
     path('api/lessons/', api_views.LessonViewSet.as_view(), name='lesson-add'), 
+    path('api/assignments/<int:student_pk>/', api_views.StudentLessonsListViewSet.as_view(), name='assignments-list'),
     path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     path('instructor/studio/', api_views.list_students, name='instructor-studio'),
     path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile')
