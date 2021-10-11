@@ -182,4 +182,4 @@ STATICFILES_DIRS = [
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 #Defines where we store files
-DEFAULT_FILE_STORAGE = 'music.storage_backends.MediaStorage' 
+# DEFAULT_FILE_STORAGE = 'music.storage_backends.MediaStorage' 
