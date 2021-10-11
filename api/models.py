@@ -22,7 +22,7 @@ class User(AbstractUser):
         return f"<User username={self.username}>"
 
     def __str__(self):
-        return self.username
+        return f"{self.first_name} {self.last_name}"
 
 
 class Lesson(models.Model):
@@ -60,3 +60,9 @@ class PracticeLog(models.Model):
 
     def __str__(self):
         return f"{self.body}"
+
+
+class Document(models.Model):
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=255)
+    upload = models.FileField()
