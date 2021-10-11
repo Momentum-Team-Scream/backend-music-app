@@ -90,7 +90,7 @@ class StudentLessonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ("pk", "lesson_date", "note")
+        fields = ("pk", "lesson_date", 'student', "note")
     
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:

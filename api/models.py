@@ -36,7 +36,7 @@ class Lesson(models.Model):
         ordering = ['lesson_date', 'lesson_time']
 
     def __str__(self):
-        return f"{self.lesson_date}"
+        return f"{self.lesson_date} {self.student}"
 
 
 class Note(models.Model):
