@@ -18,6 +18,7 @@ from django.urls import path, include
 from api import views as api_views
 from rest_framework.routers import SimpleRouter
 
+
 router = SimpleRouter()
 router.register(r'note', api_views.NoteViewSet)
 router.register(r'practices', api_views.PracticeLogViewSet)
@@ -40,4 +41,5 @@ urlpatterns = [
     #path('/<int:id>/', api_views.UploadAPIView.as_view(), name="upload-picture-info"),
     #path('api/documents/<int:instructor_pk>/')
     # re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view())
+    path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup')
 ]
