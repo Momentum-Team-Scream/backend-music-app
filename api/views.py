@@ -152,9 +152,18 @@ class StudentSignupViewSet(ModelViewSet):
 
 
 
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         documents = Document.objects.all()
+#         context['documents'] = documents
+#         return context
 
+# class FileUploadView(views.APIView):
+#     parser_classes = [FileUploadParser]
 
-    # def _linked_to_instructor(self, pk):
-    #     if self.is_instructor = True:
-    #         return HttpResponse(status=403)
-    #     else: 
+#     def put(self, request, filename, format=None):
+#         file_obj = request.data['file']
+#         # ...
+#         # do some stuff with uploaded file
+#         # ...
+#         return Response(status=204)
