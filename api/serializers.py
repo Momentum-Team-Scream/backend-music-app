@@ -104,6 +104,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "username", 
             "email",
             "phone", 
+            "instructor",
             "emergency_contact_name",
             "emergency_contact_phone")
 
@@ -119,12 +120,6 @@ class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = '__all__'
-
-# student signup
-# class CustomForeignKey(serializers.PrimaryKeyRelatedField):
-
-# 	def get_queryset(self):
-# 		return User.objects.filter(is_instructor=True)
 
 class StudentSignupSerializer(serializers.ModelSerializer):
 
