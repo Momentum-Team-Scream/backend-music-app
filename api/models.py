@@ -25,6 +25,13 @@ class User(AbstractUser):
         return f"{self.first_name} {self.last_name}"
 
 
+class Tag(models.Model):
+    tag = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.tag
+    
+    
 class Lesson(models.Model):
     lesson_date = models.DateField(auto_now_add=False, auto_now=False)
     lesson_time = models.TimeField(auto_now_add=False, auto_now=False)
@@ -61,8 +68,10 @@ class PracticeLog(models.Model):
     def __str__(self):
         return f"{self.body}"
 
-
 class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255)
     upload = models.FileField()
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
+    students = models.ManyToManyField(User, blank=True, related_name='document_students')
+    tags = models.ManyToManyField(Tag, blank=True, related_name='document_tags')

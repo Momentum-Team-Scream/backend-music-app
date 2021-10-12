@@ -11,6 +11,11 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from django.urls import reverse_lazy
 
+from rest_framework.exceptions import ParseError
+from rest_framework.parsers import FileUploadParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .permissions import IsInstructorAndLessonOwner
 from .models import Document, PracticeLog, User, Lesson, Note
 from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
@@ -139,12 +144,16 @@ class PracticeLogViewSet(ModelViewSet):
 #         context['documents'] = documents
 #         return context
 
-class FileUploadView(views.APIView):
-    parser_classes = [FileUploadParser]
+# class FileUploadView(APIView):
+#     parser_class = [FileUploadParser]
 
-    def put(self, request, filename, format=None):
-        file_obj = request.data['file']
-        # ...
-        # do some stuff with uploaded file
-        # ...
-        return Response(status=204)
+#     def put(self, request, filename, format=None):
+#         file_obj = request.data['file']
+#         # ...
+#         # do some stuff with uploaded file
+#         # ...
+#         return Response(status=204)
+    
+#     def delete(self, request, format=None):
+#         document.my_file_field.delete(save=True)
+#         return Response(status=status.HTTP_204_NO_CONTENT)

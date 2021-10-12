@@ -35,5 +35,7 @@ urlpatterns = [
     path('api/assignments/<int:student_pk>/', api_views.StudentLessonsListViewSet.as_view(), name='assignments-list'),
     path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     path('instructor/studio/', api_views.list_students, name='instructor-studio'),
-    path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile')
+    path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile'),
+    #path('api/documents/<int:instructor_pk>/')
+    # re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view())
 ]
