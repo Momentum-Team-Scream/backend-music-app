@@ -1,7 +1,7 @@
 from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
-from rest_framework.views import APIView
+
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import Document, PracticeLog, User, Lesson, Note
