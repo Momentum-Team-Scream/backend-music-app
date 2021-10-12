@@ -102,6 +102,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "username", 
             "email",
             "phone", 
+            "instructor",
             "emergency_contact_name",
             "emergency_contact_phone")
 

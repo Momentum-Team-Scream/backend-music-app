@@ -31,6 +31,13 @@ class SharedProfileViewSet(ModelViewSet):
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_permissions(self):
+        if self.request.user.is_instructor == True:
+            permission_classes = [IsAuthenticated, IsInstructorOfStudent]
+        if self.request.user.is_instructor == False:
+            permission_classes = [IsAuthenticated, IsStudentofInstructor]
+        return permission_classes
+
 
 class LessonViewSet(ListCreateAPIView):
     queryset = Lesson.objects.all()
@@ -91,21 +98,23 @@ class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
 class ProfileViewSet(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = StudentProfileSerializer
-    permission_classes = [IsAuthenticated]
     
     def get_serializer_class(self):
         serializer_class = self.serializer_class
         if self.request.user.is_instructor == True:
             serializer_class = ProfileSerializer
         return serializer_class
+    
+    # def check_object_permissions(self, request, obj):
+    #     return super().check_object_permissions(request, obj)
 
-    def get_permissions(self):
-        if self.request.user.is_instructor == True:
-            permission_classes = [IsInstructorOfStudent]
-        if self.request.user.is_instructor == False:
-            permission_classes = [IsStudentofInstructor]
-        return permission_classes
-
+    # def get_permissions(self):
+    #     if self.request.user.is_instructor == True:
+    #         permission_classes = [IsInstructorOfStudent]
+    #     if self.request.user.is_instructor == False:
+    #         permission_classes = [IsStudentofInstructor]
+    #     return permission_classes
+        
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     permission_classes = [IsAuthenticated]
