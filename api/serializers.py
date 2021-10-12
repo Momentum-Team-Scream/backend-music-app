@@ -39,7 +39,7 @@ class AddLessonSerializer(serializers.ModelSerializer):
 
 
 class LessonSerializer(serializers.ModelSerializer):
-    student = serializers.SerializerMethodField('combined_student_name')
+    student_name = serializers.SerializerMethodField('combined_student_name')
     lesson_date = serializers.DateField("%b. %d, %Y")
     lesson_time = serializers.TimeField("%-I:%M%p")
     note = NoteSerializer (many=True, read_only=True)
@@ -58,6 +58,7 @@ class LessonSerializer(serializers.ModelSerializer):
             "lesson_time", 
             "plan", 
             "student",
+            "student_name",
             "author", 
             "created_at", 
             "note")
