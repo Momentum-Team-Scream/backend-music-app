@@ -144,16 +144,20 @@ class PracticeLogViewSet(ModelViewSet):
 #         context['documents'] = documents
 #         return context
 
-# class FileUploadView(APIView):
-#     parser_class = [FileUploadParser]
+class FileUploadView(APIView):
+    parser_class = [FileUploadParser]
 
-#     def put(self, request, filename, format=None):
-#         file_obj = request.data['file']
-#         # ...
-#         # do some stuff with uploaded file
-#         # ...
-#         return Response(status=204)
+    def put(self, request, format=None):
+        if 'file' not in request.data:
+            raise ParseError("Empty content")
+        
+        f = request.data['file']
+
+        Document.upload.save(f.title, f, save=True)
+        return Response(status=status.HTTP_201_CREATED)
     
-#     def delete(self, request, format=None):
-#         document.my_file_field.delete(save=True)
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, format=None):
+        Document.upload.delete(save=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
