@@ -9,11 +9,10 @@ from rest_framework import status
 from datetime import date
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
-from django.urls import reverse_lazy
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import Document, PracticeLog, User, Lesson, Note
-from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -66,18 +65,19 @@ class LessonViewSet(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-#Lists student lessons for instructor to view (in the works)
-class StudentLessonsListViewSet(ListAPIView):
-    queryset = Lesson.objects.all()
-    serializer_class = StudentLessonSerializer
-    permission_classes = [IsAuthenticated]
+# #Lists student lessons for instructor to view (in the works)
 
-    def get_queryset(self):
-        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time')
-        return queryset
+# class LessonListProfileViewSet(ListAPIView):
+#     queryset = Lesson.objects.all()
+#     serializer_class = ListLessonsSerializer
+#     permission_classes = [IsAuthenticated]
 
+#     def get_queryset(self):
+#         student = User.objects.filter(is_instructor=False, pk=some way to reference the student user they are looking at)
+#         if self.request.user.is_instructor == True:
+#             queryset = Lesson.objects.filter(student).order_by('-lesson_date', '-lesson_time')
+#         return queryset
     
-
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
@@ -130,11 +130,31 @@ class PracticeLogViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
 
 
-# class DocumentCreateView(ModelViewSet):
-#     queryset = Document.objects.all()
+class DocumentCreateView(ModelViewSet):
+    queryset = Document.objects.all()
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         documents = Document.objects.all()
-#         context['documents'] = documents
-#         return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        documents = Document.objects.all()
+        context['documents'] = documents
+        return context
+
+class StudentSignupViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = StudentSignupSerializer
+
+    def perform_create(self, serializer):         
+        serializer.save(is_instructor=False)
+
+
+
+
+
+
+
+
+
+    # def _linked_to_instructor(self, pk):
+    #     if self.is_instructor = True:
+    #         return HttpResponse(status=403)
+    #     else: 
