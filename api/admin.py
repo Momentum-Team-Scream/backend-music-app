@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import PracticeLog, User, Lesson, Note
+from .models import Document, PracticeLog, Tag, User, Lesson, Note
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -17,3 +17,11 @@ class NoteAdmin(admin.ModelAdmin):
 @admin.register(PracticeLog)
 class PracticeAdmin(admin.ModelAdmin):
     list_display = ['pk', 'body', 'author', 'created_at']
+    
+@admin.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'title', 'author', 'uploaded_at']
+    
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['tag']
