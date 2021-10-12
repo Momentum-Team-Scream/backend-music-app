@@ -23,16 +23,16 @@ class ProfileSerializer(serializers.ModelSerializer):
             'emergency_contact_phone')
 
 class NoteSerializer(serializers.ModelSerializer):
-    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     class Meta:
         model = Note
         fields = ('pk', 'body', 'lesson', 'is_assignment', 'created_at')
 
 class AddLessonSerializer(serializers.ModelSerializer):
     lesson_date = serializers.DateField("%b. %d, %Y")
-    lesson_time = serializers.TimeField("%I:%M %p")
+    lesson_time = serializers.TimeField("%-I:%M%p")
     author = serializers.SlugRelatedField(slug_field="username", read_only=True)
-    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     class Meta:
         model = Lesson
         fields = '__all__'
@@ -41,10 +41,10 @@ class AddLessonSerializer(serializers.ModelSerializer):
 class LessonSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField('combined_student_name')
     lesson_date = serializers.DateField("%b. %d, %Y")
-    lesson_time = serializers.TimeField("%I:%M %p")
+    lesson_time = serializers.TimeField("%-I:%M%p")
     note = NoteSerializer (many=True, read_only=True)
     author = serializers.SlugRelatedField(slug_field="username", read_only=True)
-    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
 
     def combined_student_name (self, obj):
         student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
@@ -64,35 +64,25 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
-    lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
+    # lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
+    lesson_date = serializers.DateField(format='%b. %d, %Y')
+    lesson_time = serializers.TimeField(format='%-I:%M%p')
 
     def combined_student_name (self, obj):
         student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
         return student_name
-        
-    def combined_lesson_date_time (self, obj):
-        date = obj.lesson_date
-        time = obj.lesson_time
-        lesson_date = '{} at {}'.format(date.strftime("%b. %d, %Y"), time.strftime("%I:%M %p"))
-        return lesson_date
     class Meta:
         model = Lesson
-        fields = ("pk", "student", "student_name", "lesson_date")
+        fields = ("pk", "student", "student_name", "lesson_date", 'lesson_time')
 
 
 class StudentLessonSerializer(serializers.ModelSerializer):
-    lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
+    lesson_date = serializers.DateField(format='%b. %d, %Y')
+    lesson_time = serializers.TimeField(format='%-I:%M%p')
     note = NoteSerializer (many=True, read_only=True)
-    
-    def combined_lesson_date_time (self, obj):
-        date = obj.lesson_date
-        time = obj.lesson_time
-        lesson_date = '{} at {}'.format(date.strftime("%b. %d, %Y"), time.strftime("%I:%M %p"))
-        return lesson_date
-
     class Meta:
         model = Lesson
-        fields = ("pk", "lesson_date", 'student', "note")
+        fields = ("pk", 'student', "lesson_date", "lesson_time", "note")
     
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -109,7 +99,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "emergency_contact_phone")
 
 class PracticeLogSerializer(serializers.ModelSerializer):
-    created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     author = serializers.SlugRelatedField(slug_field="username", read_only=True)
     class Meta:
         model = PracticeLog
