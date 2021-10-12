@@ -47,8 +47,8 @@ class LessonSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %I:%M %p', read_only=True)
 
     def combined_student_name (self, obj):
-        student = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
-        return student
+        student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
+        return student_name
 
     class Meta:
         model = Lesson
@@ -57,7 +57,7 @@ class LessonSerializer(serializers.ModelSerializer):
             "lesson_date", 
             "lesson_time", 
             "plan", 
-            "student", 
+            "student",
             "author", 
             "created_at", 
             "note")
@@ -77,7 +77,7 @@ class ListLessonsSerializer(serializers.ModelSerializer):
         return lesson_date
     class Meta:
         model = Lesson
-        fields = ("pk", "student_name", "lesson_date")
+        fields = ("pk", "student", "student_name", "lesson_date")
 
 
 class StudentLessonSerializer(serializers.ModelSerializer):
