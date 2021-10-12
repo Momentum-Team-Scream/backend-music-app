@@ -83,7 +83,7 @@ class StudentLessonSerializer(serializers.ModelSerializer):
     note = NoteSerializer (many=True, read_only=True)
     class Meta:
         model = Lesson
-        fields = ("pk", 'student', "lesson_date", "lesson_time", "note")
+        fields = ("pk", 'student', "lesson_date", "lesson_time", "plan", "note")
     
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
