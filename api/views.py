@@ -2,7 +2,7 @@ from django.http import request
 from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,7 +10,7 @@ from datetime import date
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 
-from .permissions import IsInstructorAndLessonOwner
+from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, User, Lesson, Note
 from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
 
@@ -29,6 +29,13 @@ class SharedProfileViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.user.is_instructor == True:
+            permission_classes = [IsAuthenticated, IsInstructorOfStudent]
+        if self.request.user.is_instructor == False:
+            permission_classes = [IsAuthenticated, IsStudentofInstructor]
+        return permission_classes
 
 
 class LessonViewSet(ListCreateAPIView):
@@ -81,7 +88,7 @@ class LessonViewSet(ListCreateAPIView):
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsInstructorAndLessonOwner]
+    permission_classes = [IsAuthenticated, IsInstructorAndLessonOwner, IsInstructorOfStudent]
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -97,7 +104,17 @@ class ProfileViewSet(RetrieveUpdateAPIView):
         if self.request.user.is_instructor == True:
             serializer_class = ProfileSerializer
         return serializer_class
+    
+    # def check_object_permissions(self, request, obj):
+    #     return super().check_object_permissions(request, obj)
 
+    # def get_permissions(self):
+    #     if self.request.user.is_instructor == True:
+    #         permission_classes = [IsInstructorOfStudent]
+    #     if self.request.user.is_instructor == False:
+    #         permission_classes = [IsStudentofInstructor]
+    #     return permission_classes
+        
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     permission_classes = [IsAuthenticated]
@@ -108,7 +125,7 @@ class NoteViewSet(ModelViewSet):
 
 # Listing Instructor Studio
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated, IsInstructorOfStudent])
 def list_students(request):
     if not (request.user.is_authenticated and request.user.is_instructor):
         return HttpResponse(status=403) 
@@ -123,7 +140,7 @@ def list_students(request):
     
 class PracticeLogViewSet(ModelViewSet):
     queryset = PracticeLog.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsStudentOwner]
     serializer_class = PracticeLogSerializer
     
     def perform_create(self, serializer):
