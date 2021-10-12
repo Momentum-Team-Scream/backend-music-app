@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 
 from .permissions import IsInstructorAndLessonOwner
 from .models import Document, PracticeLog, User, Lesson, Note
-from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -144,20 +144,39 @@ class PracticeLogViewSet(ModelViewSet):
 #         context['documents'] = documents
 #         return context
 
-class FileUploadView(APIView):
-    parser_class = [FileUploadParser]
+# class FileUploadView(APIView):
+#     parser_class = [FileUploadParser]
 
-    def put(self, request, format=None):
-        if 'file' not in request.data:
-            raise ParseError("Empty content")
+#     def put(self, request, format=None):
+#         if 'file' not in request.data:
+#             raise ParseError("Empty content")
         
-        f = request.data['file']
+#         f = request.data['file']
 
-        Document.upload.save(f.title, f, save=True)
-        return Response(status=status.HTTP_201_CREATED)
+#         Document.upload.save(f.title, f, save=True)
+#         return Response(status=status.HTTP_201_CREATED)
     
-    def delete(self, request, format=None):
-        Document.upload.delete(save=True)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def delete(self, request, format=None):
+#         Document.upload.delete(save=True)
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class UploadAPIView(UpdateAPIView):
+
+
+    def update(self, request, *args, **kwargs):
+        # The upload_id is obtained from front-end after having successfully uploaded the picture.
+        upload_id = request.data['upload_id']
+        # Given a variable upload_id containing a 22-character unique file upload ID:
+        if upload_id != '' and upload_id != None:
+            su = store_upload(
+                upload_id, destination_file_path='target_dir/{}.png'.format(upload_id))
+
+        id = self.kwargs.get(self.lookup_url_kwarg)
+        your_obj = Document.objects.filter(id=id).get()
+
+        serializer = DocumentSerializer(data=serializer, many=True)
+        your_obj.is_valid()
+        your_obj.save()
+# return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

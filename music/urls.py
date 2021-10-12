@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, url
 from api import views as api_views
 from rest_framework.routers import SimpleRouter
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
+    path('fp/', include('django_drf_filepond.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/users/', api_views.DjoserUserViewSet.as_view({'get': 'list'}), name='register-new-user'),
@@ -36,6 +37,7 @@ urlpatterns = [
     path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     path('instructor/studio/', api_views.list_students, name='instructor-studio'),
     path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile'),
+    path('/<int:id>/', api_views.UploadAPIView.as_view(), name="upload-picture-info"),
     #path('api/documents/<int:instructor_pk>/')
     # re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view())
 ]
