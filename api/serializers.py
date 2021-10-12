@@ -1,3 +1,5 @@
+from django.db import models
+from django.db.models.deletion import CASCADE
 from rest_framework import serializers
 import djoser
 from .models import Document, Lesson, Note, PracticeLog, User
@@ -117,3 +119,25 @@ class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = '__all__'
+
+# student signup
+# class CustomForeignKey(serializers.PrimaryKeyRelatedField):
+
+# 	def get_queryset(self):
+# 		return User.objects.filter(is_instructor=True)
+
+class StudentSignupSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "is_instructor",
+            "instructor",
+            "first_name", 
+            "last_name", 
+            "username",
+            "email", 
+            "phone", 
+            "emergency_contact_name", 
+            'emergency_contact_phone'
+        )
