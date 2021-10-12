@@ -138,3 +138,13 @@ class PracticeLogViewSet(ModelViewSet):
 #         documents = Document.objects.all()
 #         context['documents'] = documents
 #         return context
+
+class FileUploadView(views.APIView):
+    parser_classes = [FileUploadParser]
+
+    def put(self, request, filename, format=None):
+        file_obj = request.data['file']
+        # ...
+        # do some stuff with uploaded file
+        # ...
+        return Response(status=204)
