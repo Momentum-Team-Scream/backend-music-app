@@ -30,12 +30,12 @@ class SharedProfileViewSet(ModelViewSet):
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_permissions(self):
-        if self.request.user.is_instructor == True:
-            permission_classes = [IsAuthenticated, IsInstructorOfStudent]
-        if self.request.user.is_instructor == False:
-            permission_classes = [IsAuthenticated, IsStudentofInstructor]
-        return permission_classes
+    # def get_permissions(self):
+    #     if self.request.user.is_instructor == True:
+    #         permission_classes = [IsAuthenticated, IsInstructorOfStudent]
+    #     if self.request.user.is_instructor == False:
+    #         permission_classes = [IsAuthenticated, IsStudentofInstructor]
+    #     return permission_classes
 
 
 class LessonViewSet(ListCreateAPIView):
@@ -71,24 +71,20 @@ class LessonViewSet(ListCreateAPIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# #Lists student lessons for instructor to view
+class StudentLessonsListViewSet(ListAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = StudentLessonSerializer
+    permission_classes = [IsAuthenticated]
 
-# #Lists student lessons for instructor to view (in the works)
-
-# class LessonListProfileViewSet(ListAPIView):
-#     queryset = Lesson.objects.all()
-#     serializer_class = ListLessonsSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         student = User.objects.filter(is_instructor=False, pk=some way to reference the student user they are looking at)
-#         if self.request.user.is_instructor == True:
-#             queryset = Lesson.objects.filter(student).order_by('-lesson_date', '-lesson_time')
-#         return queryset
+    def get_queryset(self):
+        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time')
+        return queryset
     
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [IsAuthenticated, IsInstructorAndLessonOwner, IsInstructorOfStudent]
+    permission_classes = [IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -104,16 +100,6 @@ class ProfileViewSet(RetrieveUpdateAPIView):
         if self.request.user.is_instructor == True:
             serializer_class = ProfileSerializer
         return serializer_class
-    
-    # def check_object_permissions(self, request, obj):
-    #     return super().check_object_permissions(request, obj)
-
-    # def get_permissions(self):
-    #     if self.request.user.is_instructor == True:
-    #         permission_classes = [IsInstructorOfStudent]
-    #     if self.request.user.is_instructor == False:
-    #         permission_classes = [IsStudentofInstructor]
-    #     return permission_classes
         
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
@@ -125,7 +111,7 @@ class NoteViewSet(ModelViewSet):
 
 # Listing Instructor Studio
 @api_view(['GET'])
-@permission_classes([IsAuthenticated, IsInstructorOfStudent])
+@permission_classes([IsAuthenticated])
 def list_students(request):
     if not (request.user.is_authenticated and request.user.is_instructor):
         return HttpResponse(status=403) 
@@ -140,12 +126,11 @@ def list_students(request):
     
 class PracticeLogViewSet(ModelViewSet):
     queryset = PracticeLog.objects.all()
-    permission_classes = [IsAuthenticated, IsStudentOwner]
+    permission_classes = [IsAuthenticated]
     serializer_class = PracticeLogSerializer
     
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-
 
 class DocumentCreateView(ModelViewSet):
     queryset = Document.objects.all()
@@ -164,23 +149,3 @@ class StudentSignupViewSet(ModelViewSet):
         serializer.save(is_instructor=False)
 
 
-
-
-
-
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         documents = Document.objects.all()
-#         context['documents'] = documents
-#         return context
-
-# class FileUploadView(views.APIView):
-#     parser_classes = [FileUploadParser]
-
-#     def put(self, request, filename, format=None):
-#         file_obj = request.data['file']
-#         # ...
-#         # do some stuff with uploaded file
-#         # ...
-#         return Response(status=204)
