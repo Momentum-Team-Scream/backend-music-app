@@ -71,7 +71,7 @@ class PracticeLog(models.Model):
 class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255)
-    upload = models.FileField()
+    upload = models.FileField(blank=True, null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
     students = models.ManyToManyField(User, blank=True, related_name='document_students')
     tags = models.ManyToManyField(Tag, blank=True, related_name='document_tags')

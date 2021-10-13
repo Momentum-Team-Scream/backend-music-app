@@ -22,6 +22,7 @@ from rest_framework.routers import SimpleRouter
 router = SimpleRouter()
 router.register(r'note', api_views.NoteViewSet)
 router.register(r'practices', api_views.PracticeLogViewSet)
+#router.register(r'documents', api_views.FileUploadView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,8 +40,9 @@ urlpatterns = [
     path('api/assignments/<int:student_pk>/previous/<int:pk>/', api_views.PreviousLessonViewSet.as_view(), name='lesson-previous'), 
     path('instructor/studio/', api_views.list_students, name='instructor-studio'),
     path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile'),
+    path('api/documents/', api_views.DocumentCreateView.as_view({'get': 'list', 'post': 'create'}), name='documents-create'),
+    
     #path('/<int:id>/', api_views.UploadAPIView.as_view(), name="upload-picture-info"),
-    #path('api/documents/<int:instructor_pk>/')
     # re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view())
     path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup')
 ]
