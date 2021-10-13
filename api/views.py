@@ -170,8 +170,11 @@ class StudentSignupViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = StudentSignupSerializer
 
-    def perform_create(self, serializer):         
-        serializer.save(is_instructor=False)
+    def perform_create(self, serializer): 
+        is_instructor = False
+        instructor = User.objects.get(pk=self.kwargs['pk'])
+        serializer.save(is_instructor=is_instructor, instructor=instructor)
+
 
         
 # class FileUploadView(APIView):
