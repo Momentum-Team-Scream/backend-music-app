@@ -152,6 +152,9 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny'
     ],
     'DATE_INPUT_FORMATS': ['iso-8601'],
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser', 'rest_framework.parsers.FileUploadParser'
+    )
 }
 
 

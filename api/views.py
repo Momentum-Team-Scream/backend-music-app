@@ -37,13 +37,6 @@ class SharedProfileViewSet(ModelViewSet):
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
 
-    # def get_permissions(self):
-    #     if self.request.user.is_instructor == True:
-    #         permission_classes = [IsAuthenticated, IsInstructorOfStudent]
-    #     if self.request.user.is_instructor == False:
-    #         permission_classes = [IsAuthenticated, IsStudentofInstructor]
-    #     return permission_classes
-
 
 class LessonViewSet(ListCreateAPIView):
     queryset = Lesson.objects.all()
@@ -95,7 +88,7 @@ class PreviousLessonViewSet(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        lesson = get_object_or_404(Lesson, pk=self.kwargs['pk'])
+        lesson = get_object_or_404(Lesson, pk=self.kwargs['pk']) 
         queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time').exclude(lesson_date__gt=lesson.lesson_date)[:5]
         return queryset
 
