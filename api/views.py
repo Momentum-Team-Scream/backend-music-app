@@ -10,7 +10,7 @@ from rest_framework import status
 
 from datetime import date
 from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import action, api_view, permission_classes
 
 from rest_framework.exceptions import ParseError
 from rest_framework.parsers import FileUploadParser, JSONParser
@@ -158,8 +158,10 @@ class StudentSignupViewSet(ModelViewSet):
 class FileUploadView(ModelViewSet):
     serializer_class = DocumentSerializer
     parser_class = [JSONParser, FileUploadParser]
+    queryset = Document.objects.all()
 
-    def put(self, request, format=None):
+    @action(detail=True, methods=["put", "patch"])
+    def upload(self, request, pk, format=None):
         if 'file' not in request.data:
             raise ParseError("Empty content")
         
@@ -172,7 +174,7 @@ class FileUploadView(ModelViewSet):
         Document.upload.delete(save=True)
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-    def get_parser_classes(self):
+    def get_parsers(self):
         if "file" in self.request.data:
             return [FileUploadParser]
 
