@@ -158,12 +158,11 @@ class PracticeLogViewSet(ModelViewSet):
 
 class DocumentCreateView(ModelViewSet):
     queryset = Document.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = DocumentSerializer
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        documents = Document.objects.all()
-        context['documents'] = documents
-        return context
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class StudentSignupViewSet(ModelViewSet):
