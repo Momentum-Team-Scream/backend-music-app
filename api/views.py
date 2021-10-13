@@ -31,6 +31,7 @@ class UserViewSet(DjoserUserViewSet):
             serializer_class = StudentProfileSerializer
         return serializer_class
 
+
 class SharedProfileViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = StudentProfileSerializer
@@ -77,6 +78,7 @@ class LessonViewSet(ListCreateAPIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # #Lists student lessons for instructor to view
 class StudentLessonsListViewSet(ListAPIView):
     queryset = Lesson.objects.all()
@@ -86,7 +88,17 @@ class StudentLessonsListViewSet(ListAPIView):
     def get_queryset(self):
         queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time')
         return queryset
-    
+
+class PreviousLessonViewSet(ListAPIView):
+    queryset = Lesson.objects.all()
+    serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time')[1:2]
+        return queryset
+
+
 class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
@@ -97,6 +109,7 @@ class LessonDetailViewSet(RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+
 class ProfileViewSet(RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = StudentProfileSerializer
@@ -106,7 +119,8 @@ class ProfileViewSet(RetrieveUpdateAPIView):
         if self.request.user.is_instructor == True:
             serializer_class = ProfileSerializer
         return serializer_class
-        
+
+
 class NoteViewSet(ModelViewSet):
     queryset = Note.objects.all()
     permission_classes = [IsAuthenticated]
@@ -114,6 +128,7 @@ class NoteViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
 
 # Listing Instructor Studio
 @api_view(['GET'])
@@ -129,7 +144,8 @@ def list_students(request):
         serializer = StudentProfileSerializer(student, context={'request': request})
         output["students"].append(serializer.data)
     return JsonResponse(output)
-    
+
+
 class PracticeLogViewSet(ModelViewSet):
     queryset = PracticeLog.objects.all()
     permission_classes = [IsAuthenticated]
@@ -137,6 +153,7 @@ class PracticeLogViewSet(ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
 
 class DocumentCreateView(ModelViewSet):
     queryset = Document.objects.all()
@@ -146,6 +163,7 @@ class DocumentCreateView(ModelViewSet):
         documents = Document.objects.all()
         context['documents'] = documents
         return context
+
 
 class StudentSignupViewSet(ModelViewSet):
     queryset = User.objects.all()

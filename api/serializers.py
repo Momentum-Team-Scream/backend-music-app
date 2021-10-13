@@ -1,15 +1,15 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from rest_framework import serializers
-import djoser
 from .models import Document, Lesson, Note, PracticeLog, User
+
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("username", "email")
 
-        
+
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -22,11 +22,13 @@ class ProfileSerializer(serializers.ModelSerializer):
             "emergency_contact_name", 
             'emergency_contact_phone')
 
+
 class NoteSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     class Meta:
         model = Note
         fields = ('pk', 'body', 'lesson', 'is_assignment', 'created_at')
+
 
 class AddLessonSerializer(serializers.ModelSerializer):
     lesson_date = serializers.DateField("%b. %d, %Y")
@@ -36,6 +38,15 @@ class AddLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
+
+
+class PreviousLessonSerializer(serializers.ModelSerializer):
+    lesson_date = serializers.DateField(format='%b. %d, %Y')
+    lesson_time = serializers.TimeField(format='%-I:%M%p')
+    note = NoteSerializer (many=True, read_only=True)
+    class Meta:
+        model = Lesson
+        fields = ("pk", 'student', "lesson_date", "lesson_time", "plan", "note")
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -63,6 +74,7 @@ class LessonSerializer(serializers.ModelSerializer):
             "created_at", 
             "note")
 
+
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
     # lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
@@ -84,7 +96,8 @@ class StudentLessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("pk", 'student', "lesson_date", "lesson_time", "plan", "note")
-    
+
+
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -99,6 +112,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "emergency_contact_name",
             "emergency_contact_phone")
 
+
 class PracticeLogSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     author = serializers.SlugRelatedField(slug_field="username", read_only=True)
@@ -112,8 +126,8 @@ class DocumentSerializer(serializers.ModelSerializer):
         model = Document
         fields = '__all__'
 
-class StudentSignupSerializer(serializers.ModelSerializer):
 
+class StudentSignupSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
