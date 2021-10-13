@@ -169,7 +169,7 @@ class StudentSignupViewSet(ModelViewSet):
 
 
         
-class FileUploadView(ModelViewSet):
+class FileUploadView(RetrieveUpdateDestroyAPIView):
     serializer_class = DocumentSerializer
     parser_class = [JSONParser, FileUploadParser]
     queryset = Document.objects.all()

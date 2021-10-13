@@ -55,9 +55,6 @@ INSTALLED_APPS = [
     'djoser',
     'django_extensions',
     'corsheaders',
-    'django_drf_filepond'
-
-
 ]
 
 MIDDLEWARE = [
@@ -184,15 +181,3 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-# Use a remote file storage backend via the django-storages library
-#  for the Amazon S3 backend:
-DJANGO_DRF_FILEPOND_STORAGES_BACKEND = STATICFILES_STORAGE
-#DJANGO_DRF_FILEPOND_STORAGES_BACKEND = 'storages.backends.s3boto3.S3Boto3Storage'
-DJANGO_DRF_FILEPOND_FILE_STORE_PATH = None
-
-#Set the location where you want django-drf-filepond to store temporary file uploads
-DJANGO_DRF_FILEPOND_UPLOAD_TMP = os.path.join(BASE_DIR, 'filepond-temp-uploads')
-
-#Defines where we store files
-# DEFAULT_FILE_STORAGE = 'music.storage_backends.MediaStorage' 

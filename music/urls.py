@@ -28,7 +28,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
-    path('fp/', include('django_drf_filepond.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/users/', api_views.DjoserUserViewSet.as_view({'get': 'list'}), name='register-new-user'),
