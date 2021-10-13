@@ -13,12 +13,12 @@ from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser, JSONParser
 from rest_framework.response import Response
 
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, User, Lesson, Note
-from .serializers import AddLessonSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -155,38 +155,46 @@ class StudentSignupViewSet(ModelViewSet):
         serializer.save(is_instructor=False)
 
         
-# class FileUploadView(APIView):
-#     parser_class = [FileUploadParser]
+class FileUploadView(ModelViewSet):
+    serializer_class = DocumentSerializer
+    parser_class = [JSONParser, FileUploadParser]
 
-#     def put(self, request, format=None):
-#         if 'file' not in request.data:
-#             raise ParseError("Empty content")
+    def put(self, request, format=None):
+        if 'file' not in request.data:
+            raise ParseError("Empty content")
         
-#         f = request.data['file']
+        f = request.data['file']
 
-#         Document.upload.save(f.title, f, save=True)
-#         return Response(status=status.HTTP_201_CREATED)
+        Document.upload.save(f.title, f, save=True)
+        return Response(status=status.HTTP_201_CREATED)
     
-#     def delete(self, request, format=None):
-#         Document.upload.delete(save=True)
-#         return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, format=None):
+        Document.upload.delete(save=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     
-class UploadAPIView(UpdateAPIView):
+    def get_parser_classes(self):
+        if "file" in self.request.data:
+            return [FileUploadParser]
+
+        return [JSONParser]
+    
+    
+# class UploadAPIView(UpdateAPIView):
 
 
-    def update(self, request, *args, **kwargs):
-        # The upload_id is obtained from front-end after having successfully uploaded the picture.
-        upload_id = request.data['upload_id']
-        # Given a variable upload_id containing a 22-character unique file upload ID:
-        if upload_id != '' and upload_id != None:
-            su = store_upload(
-                upload_id, destination_file_path='target_dir/{}.png'.format(upload_id))
+#     def update(self, request, *args, **kwargs):
+#         # The upload_id is obtained from front-end after having successfully uploaded the picture.
+#         upload_id = request.data['upload_id']
+#         # Given a variable upload_id containing a 22-character unique file upload ID:
+#         if upload_id != '' and upload_id != None:
+#             su = store_upload(
+#                 upload_id, destination_file_path='target_dir/{}.png'.format(upload_id))
 
-        id = self.kwargs.get(self.lookup_url_kwarg)
-        your_obj = Document.objects.filter(id=id).get()
+#         id = self.kwargs.get(self.lookup_url_kwarg)
+#         your_obj = Document.objects.filter(id=id).get()
 
-        serializer = DocumentSerializer(data=serializer, many=True)
-        your_obj.is_valid()
-        your_obj.save()
-# return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         serializer = DocumentSerializer(data=serializer, many=True)
+#         your_obj.is_valid()
+#         your_obj.save()
+# # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
