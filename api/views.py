@@ -175,28 +175,8 @@ class FileUploadView(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     def get_parsers(self):
-        if "file" in self.request.data:
+        if "file" in self.request.FILES:
             return [FileUploadParser]
 
         return [JSONParser]
-    
-    
-# class UploadAPIView(UpdateAPIView):
-
-
-#     def update(self, request, *args, **kwargs):
-#         # The upload_id is obtained from front-end after having successfully uploaded the picture.
-#         upload_id = request.data['upload_id']
-#         # Given a variable upload_id containing a 22-character unique file upload ID:
-#         if upload_id != '' and upload_id != None:
-#             su = store_upload(
-#                 upload_id, destination_file_path='target_dir/{}.png'.format(upload_id))
-
-#         id = self.kwargs.get(self.lookup_url_kwarg)
-#         your_obj = Document.objects.filter(id=id).get()
-
-#         serializer = DocumentSerializer(data=serializer, many=True)
-#         your_obj.is_valid()
-#         your_obj.save()
-# # return Response(serializer.data, status=status.HTTP_201_CREATED)
 
