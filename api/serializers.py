@@ -123,9 +123,10 @@ class PracticeLogSerializer(serializers.ModelSerializer):
 
 
 class DocumentSerializer(serializers.ModelSerializer):
+    uploaded_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     class Meta:
         model = Document
-        fields = '__all__'
+        fields = ('pk', 'uploaded_at', 'title', 'upload', 'author', 'students', 'tags')
 
 
 class StudentSignupSerializer(serializers.ModelSerializer):
