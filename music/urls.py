@@ -22,13 +22,11 @@ from rest_framework.routers import SimpleRouter
 router = SimpleRouter()
 router.register(r'note', api_views.NoteViewSet)
 router.register(r'practices', api_views.PracticeLogViewSet)
-#router.register(r'documents', api_views.FileUploadView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(router.urls)),
     path('api-auth/', include('rest_framework.urls')),
-    path('fp/', include('django_drf_filepond.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('auth/users/', api_views.DjoserUserViewSet.as_view({'get': 'list'}), name='register-new-user'),
@@ -42,7 +40,6 @@ urlpatterns = [
     path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile'),
     path('api/documents/', api_views.DocumentCreateView.as_view({'get': 'list', 'post': 'create'}), name='documents-create'),
     path('api/documents/<int:pk>/', api_views.DocumentDetailViewSet.as_view({'get': 'retrieve', 'delete': 'destroy', 'patch': 'partial_update'}), name='document-details'),
-    #path('/<int:id>/', api_views.UploadAPIView.as_view(), name="upload-picture-info"),
-    # re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view())
+    path('api/documents/<int:pk>/upload/', api_views.FileUploadView.as_view(), name='document-update'),
     path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup')
 ]

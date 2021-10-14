@@ -3,7 +3,9 @@ from django.shortcuts import get_object_or_404, render
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,11 +25,11 @@ from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
-        if self.request.user.is_instructor == True:
+        if not self.request.user.is_instructor:
             serializer_class = StudentProfileSerializer
         return serializer_class
 
@@ -36,13 +38,6 @@ class SharedProfileViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
-
-    # def get_permissions(self):
-    #     if self.request.user.is_instructor == True:
-    #         permission_classes = [IsAuthenticated, IsInstructorOfStudent]
-    #     if self.request.user.is_instructor == False:
-    #         permission_classes = [IsAuthenticated, IsStudentofInstructor]
-    #     return permission_classes
 
 
 class LessonViewSet(ListCreateAPIView):
@@ -95,7 +90,7 @@ class PreviousLessonViewSet(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        lesson = get_object_or_404(Lesson, pk=self.kwargs['pk'])
+        lesson = get_object_or_404(Lesson, pk=self.kwargs['pk']) 
         queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time').exclude(lesson_date__gt=lesson.lesson_date)[:5]
         return queryset
 
@@ -168,38 +163,28 @@ class DocumentCreateView(ModelViewSet):
 class StudentSignupViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = StudentSignupSerializer
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer): 
         is_instructor = False
         instructor = User.objects.get(pk=self.kwargs['pk'])
+        username = serializer.validated_data["username"]
         serializer.save(is_instructor=is_instructor, instructor=instructor)
+        user = User.objects.get(username = username)
+        user.set_password(self.request.data["password"])
+        user.save()
 
+class FileUploadView(RetrieveUpdateAPIView):
+    parser_class = (FileUploadParser,)
 
-        
-class FileUploadView(ModelViewSet):
-    serializer_class = DocumentSerializer
-    parser_class = [JSONParser, FileUploadParser]
-    queryset = Document.objects.all()
-
-    @action(detail=True, methods=["put", "patch"])
-    def upload(self, request, pk, format=None):
+    def put(self, request, pk, format=None):
         if 'file' not in request.data:
             raise ParseError("Empty content")
-        
+
         f = request.data['file']
-
-        Document.upload.save(f.title, f, save=True)
+        document = get_object_or_404(Document, pk=pk)
+        document.upload.save(f.name, f, save=True)
         return Response(status=status.HTTP_201_CREATED)
-    
-    def delete(self, request, format=None):
-        Document.upload.delete(save=True)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    def get_parsers(self):
-        if "file" in self.request.FILES:
-            return [FileUploadParser]
-
-        return [JSONParser]
     
     
 class DocumentDetailViewSet(ModelViewSet):
@@ -219,4 +204,3 @@ class DocumentDetailViewSet(ModelViewSet):
         students = document.students.add(student=document.student)
         kwargs['partial'] = True
         return self.update(request, title, tags, students, *args, **kwargs,)
-
