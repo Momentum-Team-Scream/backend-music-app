@@ -3,7 +3,8 @@ from django.shortcuts import get_object_or_404, render
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -24,11 +25,11 @@ from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
-        if self.request.user.is_instructor == True:
+        if not self.request.user.is_instructor:
             serializer_class = StudentProfileSerializer
         return serializer_class
 
@@ -162,11 +163,30 @@ class DocumentCreateView(ModelViewSet):
 class StudentSignupViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = StudentSignupSerializer
+    permission_classes = [AllowAny]
 
     def perform_create(self, serializer): 
         is_instructor = False
         instructor = User.objects.get(pk=self.kwargs['pk'])
+        username = serializer.validated_data["username"]
         serializer.save(is_instructor=is_instructor, instructor=instructor)
+        user = User.objects.get(username = username)
+        user.set_password(self.request.data["password"])
+        user.save()
+        # username = serializer.data["username"]
+        # password = serializer.data["password"]
+        # serializer.save(is_instructor=is_instructor, instructor=instructor)
+        # user = User.objects.get(username = username)
+        # user.set_password(password)
+        # user.save()
+
+
+        # serializer.save(is_instructor=is_instructor, instructor=instructor)
+        # user = User.objects.get(username = serializer.data['username'])
+        # user.set_password(serializer.data["password"])
+        # user.save()
+
+
         
 
 class FileUploadView(RetrieveUpdateAPIView):

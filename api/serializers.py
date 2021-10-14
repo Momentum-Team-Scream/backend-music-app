@@ -110,7 +110,8 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "phone", 
             "instructor",
             "emergency_contact_name",
-            "emergency_contact_phone")
+            "emergency_contact_phone",
+            )
 
 
 class PracticeLogSerializer(serializers.ModelSerializer):
