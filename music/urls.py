@@ -22,6 +22,7 @@ from rest_framework.routers import SimpleRouter
 router = SimpleRouter()
 router.register(r'note', api_views.NoteViewSet)
 router.register(r'practices', api_views.PracticeLogViewSet)
+router.register(r'tags', api_views.TagView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,5 +42,6 @@ urlpatterns = [
     path('api/documents/', api_views.DocumentCreateView.as_view({'get': 'list', 'post': 'create'}), name='documents-create'),
     path('api/documents/<int:pk>/', api_views.DocumentDetailViewSet.as_view({'get': 'retrieve', 'delete': 'destroy', 'patch': 'partial_update'}), name='document-details'),
     path('api/documents/<int:pk>/upload/', api_views.FileUploadView.as_view(), name='document-update'),
-    path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup')
+    path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup'),
+    #path('api/tags/', api_views.AddTagView.as_view({'get': 'list', 'post': 'create'}, ), name='add-tag'),
 ]

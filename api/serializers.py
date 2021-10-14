@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from rest_framework import serializers
-from .models import Document, Lesson, Note, PracticeLog, User
+from .models import Document, Lesson, Note, PracticeLog, Tag, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -141,5 +141,11 @@ class StudentSignupSerializer(serializers.ModelSerializer):
             "email", 
             "phone", 
             "emergency_contact_name", 
-            'emergency_contact_phone'
+            "emergency_contact_phone"
         )
+        
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = '__all__'

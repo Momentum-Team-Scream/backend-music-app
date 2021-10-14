@@ -19,8 +19,8 @@ from rest_framework.parsers import FileUploadParser, JSONParser
 from rest_framework.response import Response
 
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
-from .models import Document, PracticeLog, User, Lesson, Note
-from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
+from .models import Document, PracticeLog, Tag, User, Lesson, Note
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -204,3 +204,9 @@ class DocumentDetailViewSet(ModelViewSet):
         students = document.students.add(student=document.student)
         kwargs['partial'] = True
         return self.update(request, title, tags, students, *args, **kwargs,)
+    
+    
+class TagView(ModelViewSet):
+    queryset = Tag.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = TagSerializer
