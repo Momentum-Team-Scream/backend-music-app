@@ -41,7 +41,7 @@ urlpatterns = [
     path('instructor/studio/', api_views.list_students, name='instructor-studio'),
     path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile'),
     path('api/documents/', api_views.DocumentCreateView.as_view({'get': 'list', 'post': 'create'}), name='documents-create'),
-    
+    path('api/documents/<int:pk>/', api_views.DocumentDetailViewSet.as_view({'get': 'retrieve', 'delete': 'destroy', 'patch': 'partial_update'}), name='document-details'),
     #path('/<int:id>/', api_views.UploadAPIView.as_view(), name="upload-picture-info"),
     # re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view())
     path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup')

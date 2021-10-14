@@ -200,4 +200,23 @@ class FileUploadView(ModelViewSet):
             return [FileUploadParser]
 
         return [JSONParser]
+    
+    
+class DocumentDetailViewSet(ModelViewSet):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    
+    def partial_update(self, request, *args, **kwargs):
+        document = get_object_or_404(Document, pk=self.kwargs.get('pk'))
+        title = document.title
+        tags = document.tags
+        students = document.students.add(student=document.student)
+        kwargs['partial'] = True
+        return self.update(request, title, tags, students, *args, **kwargs,)
 
