@@ -7,7 +7,7 @@ from django.db.models.deletion import CASCADE
 class User(AbstractUser):
     USER_CREATE_PASSWORD_RETYPE = True
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'phone', 'instructor', 'is_instructor', 'emergency_contact_name', 'emergency_contact_phone']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'phone', 'is_instructor', 'emergency_contact_name', 'emergency_contact_phone']
 
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     first_name = models.CharField(max_length=255)
@@ -72,6 +72,6 @@ class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=255)
     upload = models.FileField(blank=True, null=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents', blank=True, null=True)
     students = models.ManyToManyField(User, blank=True, related_name='document_students')
     tags = models.ManyToManyField(Tag, blank=True, related_name='document_tags')
