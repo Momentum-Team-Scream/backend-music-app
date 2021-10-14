@@ -15,7 +15,6 @@ django-on-heroku = "*"
 gunicorn = "*"
 boto3 = "*"
 django-storages = "*"
-django-drf-filepond = "*"
 
 [dev-packages]
 
