@@ -173,21 +173,6 @@ class StudentSignupViewSet(ModelViewSet):
         user = User.objects.get(username = username)
         user.set_password(self.request.data["password"])
         user.save()
-        # username = serializer.data["username"]
-        # password = serializer.data["password"]
-        # serializer.save(is_instructor=is_instructor, instructor=instructor)
-        # user = User.objects.get(username = username)
-        # user.set_password(password)
-        # user.save()
-
-
-        # serializer.save(is_instructor=is_instructor, instructor=instructor)
-        # user = User.objects.get(username = serializer.data['username'])
-        # user.set_password(serializer.data["password"])
-        # user.save()
-
-
-        
 
 class FileUploadView(RetrieveUpdateAPIView):
     parser_class = (FileUploadParser,)
@@ -200,3 +185,22 @@ class FileUploadView(RetrieveUpdateAPIView):
         document = get_object_or_404(Document, pk=pk)
         document.upload.save(f.name, f, save=True)
         return Response(status=status.HTTP_201_CREATED)
+    
+    
+class DocumentDetailViewSet(ModelViewSet):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    
+    def partial_update(self, request, *args, **kwargs):
+        document = get_object_or_404(Document, pk=self.kwargs.get('pk'))
+        title = document.title
+        tags = document.tags
+        students = document.students.add(student=document.student)
+        kwargs['partial'] = True
+        return self.update(request, title, tags, students, *args, **kwargs,)
