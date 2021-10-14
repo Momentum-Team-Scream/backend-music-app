@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
@@ -166,31 +167,16 @@ class StudentSignupViewSet(ModelViewSet):
         is_instructor = False
         instructor = User.objects.get(pk=self.kwargs['pk'])
         serializer.save(is_instructor=is_instructor, instructor=instructor)
-
-
         
-class FileUploadView(RetrieveUpdateDestroyAPIView):
-    serializer_class = DocumentSerializer
-    parser_class = [JSONParser, FileUploadParser]
-    queryset = Document.objects.all()
 
-    @action(detail=True, methods=["put", "patch"])
-    def upload(self, request, pk, format=None):
+class FileUploadView(RetrieveUpdateAPIView):
+    parser_class = (FileUploadParser,)
+
+    def put(self, request, pk, format=None):
         if 'file' not in request.data:
             raise ParseError("Empty content")
-        
+
         f = request.data['file']
-
-        Document.upload.save(f.title, f, save=True)
+        document = get_object_or_404(Document, pk=pk)
+        document.upload.save(f.name, f, save=True)
         return Response(status=status.HTTP_201_CREATED)
-    
-    def delete(self, request, format=None):
-        Document.upload.delete(save=True)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
-    def get_parsers(self):
-        if "file" in self.request.FILES:
-            return [FileUploadParser]
-
-        return [JSONParser]
-
