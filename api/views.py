@@ -21,8 +21,9 @@ from rest_framework.response import Response
 
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
-from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, SendEmailSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
 
+from django.core.mail import send_mail, EmailMessage
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -197,7 +198,7 @@ class FileUploadView(RetrieveUpdateAPIView):
 
         f = request.data['file']
         document = get_object_or_404(Document, pk=pk)
-        document.upload.save(f.name, f, save=True)
+        document.upload.savefirst_name, f, save=True)
         return Response(status=status.HTTP_201_CREATED)
     
     
@@ -224,3 +225,23 @@ class TagView(ModelViewSet):
     queryset = Tag.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = TagSerializer
+
+
+def send_email():
+    email = EmailMessage(
+        'Title',
+        (SendEmailSerializer.first_name, SendEmailSerializer.email),
+        'Notejammin@gmail.com',
+        ['Notejammin@gmail.com']
+    )
+    email.send()
+
+class SendEmailViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = SendEmailSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super(SendEmailViewSet, self).create(request, *args, **kwargs)
+        send_email()  # sending mail
+        return response
+
