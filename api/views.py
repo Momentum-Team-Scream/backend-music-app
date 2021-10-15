@@ -198,7 +198,7 @@ class FileUploadView(RetrieveUpdateAPIView):
 
         f = request.data['file']
         document = get_object_or_404(Document, pk=pk)
-        document.upload.savefirst_name, f, save=True)
+        document.upload.save(f.name, f, save=True)
         return Response(status=status.HTTP_201_CREATED)
     
     
