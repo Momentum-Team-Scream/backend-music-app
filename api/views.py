@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from django.contrib.postgres.search import SearchVector
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -141,6 +142,13 @@ def list_students(request):
         output["students"].append(serializer.data)
     return JsonResponse(output)
 
+# def get_queryset(self):
+#     if self.request.query_params.get("search"):
+#         search_term = self.request.query_params.get("search")
+#         queryset = User.objects.annotate(search=SearchVector('title', 'owner__username')).filter(search=search_term)
+#         return queryset
+#     return super().get_queryset()
+
 
 class PracticeLogViewSet(ModelViewSet):
     queryset = PracticeLog.objects.all()
@@ -201,7 +209,7 @@ class DocumentDetailViewSet(ModelViewSet):
         document = get_object_or_404(Document, pk=self.kwargs.get('pk'))
         title = document.title
         tags = document.tags
-        students = document.students.add(student=document.student)
+        students = document.students.add()
         kwargs['partial'] = True
         return self.update(request, title, tags, students, *args, **kwargs,)
     
