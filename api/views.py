@@ -21,7 +21,7 @@ from rest_framework.response import Response
 
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
-from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
 
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -128,26 +128,32 @@ class NoteViewSet(ModelViewSet):
 
 
 # Listing Instructor Studio
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def list_students(request):
-    if not (request.user.is_authenticated and request.user.is_instructor):
-        return HttpResponse(status=403) 
-    students = request.user.students.all()
-    output = {}
-    output["instructor"] = UserSerializer(request.user).data
-    output["students"] = []
-    for student in students:
-        serializer = StudentProfileSerializer(student, context={'request': request})
-        output["students"].append(serializer.data)
-    return JsonResponse(output)
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def list_students(request):
+#     if not (request.user.is_authenticated and request.user.is_instructor):
+#         return HttpResponse(status=403) 
+#     students = request.user.students.all()
+#     output = {}
+#     output["instructor"] = UserSerializer(request.user).data
+#     output["students"] = []
+#     for student in students:
+#         serializer = StudentProfileSerializer(student, context={'request': request})
+#         output["students"].append(serializer.data)
+#     return JsonResponse(output)
 
-# def get_queryset(self):
-#     if self.request.query_params.get("search"):
-#         search_term = self.request.query_params.get("search")
-#         queryset = User.objects.annotate(search=SearchVector('title', 'owner__username')).filter(search=search_term)
-#         return queryset
-#     return super().get_queryset()
+class StudioViewSet (ListAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated, IsInstructorOfStudent]
+    serializer_class = StudioSerializer
+
+    def get_queryset(self):
+        queryset = self.request.user.students.all()
+        if self.request.query_params.get("search"):
+            search_term = self.request.query_params.get("search")
+            queryset = self.request.user.students.all().annotate(search=SearchVector('first_name', 'last_name', 'username')).filter(search__icontains=search_term)
+            return queryset
+        return queryset
 
 
 class PracticeLogViewSet(ModelViewSet):
