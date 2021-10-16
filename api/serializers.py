@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
+from django.db.models.query import QuerySet
 from rest_framework import serializers
 from .models import Document, Lesson, Note, PracticeLog, Tag, User
 
@@ -156,12 +157,18 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SendEmailSerializer(serializers.ModelSerializer):
+# class SendEmailSerializer(serializers.ModelSerializer):
+#     queryset = User.objects.all()
+#     email = User.email
 
-    class Meta:
-        model = User
-        fields = (
-            'first_name',
-            'last_name',
-            'email'
-        )
+#     class Meta:
+#         model = User
+#         fields = (
+#             'username',
+#             'email',
+#             'pk',
+#         )
+#         read_only = (
+#             'username',
+#             'pk',
+#         )
