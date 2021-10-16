@@ -148,9 +148,9 @@ class StudentSignupSerializer(serializers.ModelSerializer):
             "emergency_contact_name", 
             "emergency_contact_phone"
         )
-        
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ("pk", "slug", "created_by")

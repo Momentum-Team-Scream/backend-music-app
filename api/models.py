@@ -26,10 +26,14 @@ class User(AbstractUser):
 
 
 class Tag(models.Model):
-    tag = models.CharField(max_length=100, unique=True)
+    slug = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tags')
 
     def __str__(self):
-        return self.tag
+        return self.slug
+    
+    def __repr__(self):
+        return f"<Tag={self.slug}>"
     
     
 class Lesson(models.Model):
@@ -75,3 +79,6 @@ class Document(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents', blank=True, null=True)
     students = models.ManyToManyField(User, blank=True, related_name='document_students')
     tags = models.ManyToManyField(Tag, blank=True, related_name='document_tags')
+
+    class Meta:
+        ordering = ['-uploaded_at']
