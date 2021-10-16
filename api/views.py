@@ -224,11 +224,13 @@ class DocumentDetailViewSet(ModelViewSet):
         kwargs['partial'] = True
         if self.request.data.get('tags') != None:
             add_tags = self.request.data.get('tags')
-            tags = document.tags.add(add_tags)
+            for tag in add_tags: 
+                tags = document.tags.add(tag)
             return self.update(request, title, tags, *args, **kwargs,)
         if self.request.data.get('students') != None:
             add_students = self.request.data.get('students')
-            students = document.students.add(add_students)
+            for student in add_students:
+                students = document.students.add(student)
             return self.update(request, title, students, *args, **kwargs,)
         return self.update(request, title, *args, **kwargs,)
 
