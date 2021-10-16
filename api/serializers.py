@@ -114,9 +114,11 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             )
 
 class StudioSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
+    
     class Meta:
         model = User
-        fields = ("pk", "first_name", "last_name", "username", "email")
+        fields = ("pk", 'created_at', "first_name", "last_name", "username", "email")
 
 
 class PracticeLogSerializer(serializers.ModelSerializer):
