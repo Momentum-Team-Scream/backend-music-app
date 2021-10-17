@@ -171,6 +171,11 @@ class DocumentCreateView(ModelViewSet):
     serializer_class = DocumentSerializer
 
     def get_queryset(self):
+        queryset = self.request.user.documents.all()
+        if self.request.query_params.get("search"):
+            search_term = self.request.query_params.get("search")
+            queryset = self.request.user.documents.all().annotate(search=SearchVector('title', 'students', 'tags')).filter(search__icontains=search_term)
+            return queryset
         if self.request.user.is_instructor == True:
             queryset = Document.objects.filter(author=self.request.user)
         if self.request.user.is_instructor == False:
