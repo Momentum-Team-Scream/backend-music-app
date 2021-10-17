@@ -244,7 +244,7 @@ class TagView(ModelViewSet):
 
 class SendEmailViewSet(viewsets.ViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer(data=self.request.data)
+    serializer_class = UserSerializer()
 
     def send_email():
         email = EmailMessage(
@@ -261,3 +261,5 @@ class SendEmailViewSet(viewsets.ViewSet):
         response = super(SendEmailViewSet, self).create(request, *args, **kwargs)
         self.send_email  # sending mail
         return response()
+
+    # def get_serializer
