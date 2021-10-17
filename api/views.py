@@ -171,6 +171,13 @@ class DocumentCreateView(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = DocumentSerializer
 
+    def get_queryset(self):
+        if self.request.user.is_instructor == True:
+            queryset = Document.objects.filter(author=self.request.user)
+        if self.request.user.is_instructor == False:
+            queryset = Document.objects.filter(students=self.request.user)
+        return queryset
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -200,8 +207,8 @@ class FileUploadView(RetrieveUpdateAPIView):
         document = get_object_or_404(Document, pk=pk)
         document.upload.save(f.name, f, save=True)
         return Response(status=status.HTTP_201_CREATED)
-    
-    
+
+
 class DocumentDetailViewSet(ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
@@ -215,12 +222,19 @@ class DocumentDetailViewSet(ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         document = get_object_or_404(Document, pk=self.kwargs.get('pk'))
         title = document.title
-        tags = document.tags
-        students = document.students.add()
         kwargs['partial'] = True
-        return self.update(request, title, tags, students, *args, **kwargs,)
-    
-    
+        if self.request.data.get('tags') != None:
+            add_tags = self.request.data.get('tags')
+            for tag in add_tags: 
+                tags = document.tags.add(tag)
+            return self.update(request, title, tags, *args, **kwargs,)
+        if self.request.data.get('students') != None:
+            add_students = self.request.data.get('students')
+            for student in add_students:
+                students = document.students.add(student)
+            return self.update(request, title, students, *args, **kwargs,)
+        return self.update(request, title, *args, **kwargs,)
+
 class TagView(ModelViewSet):
     queryset = Tag.objects.all()
     permission_classes = [IsAuthenticated]
@@ -228,22 +242,22 @@ class TagView(ModelViewSet):
 
 
 
-# class SendEmailViewSet(viewsets.ViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer(data=request.data)
+class SendEmailViewSet(viewsets.ViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer(data=self.request.data)
 
-#     def send_email():
-#         email = EmailMessage(
-#             'Title',
-#             (UserSerializer.email),
-#             'Notejammin@gmail.com',
-#             ['Notejammin@gmail.com']
-#         )
-#         email.save(email)
-#         email.send()
-#         return email(serializer.data)
+    def send_email():
+        email = EmailMessage(
+            'Title',
+            (UserSerializer.email),
+            'Notejammin@gmail.com',
+            ['Notejammin@gmail.com']
+        )
+        email.save(email)
+        email.send()
+        return email(serializer.data)
 
-#     def create(self, request, *args, **kwargs):
-#         response = super(SendEmailViewSet, self).create(request, *args, **kwargs)
-#         self.send_email  # sending mail
-#         return response()
+    def create(self, request, *args, **kwargs):
+        response = super(SendEmailViewSet, self).create(request, *args, **kwargs)
+        self.send_email  # sending mail
+        return response()

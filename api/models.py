@@ -13,6 +13,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     phone = models.CharField(validators=[phone_regex], max_length=17, blank=True) 
     emergency_contact_name = models.CharField(max_length=255)
     emergency_contact_phone =  models.CharField(validators=[phone_regex], max_length=17) 
@@ -27,10 +28,14 @@ class User(AbstractUser):
 
 
 class Tag(models.Model):
-    tag = models.CharField(max_length=100, unique=True)
+    slug = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tags')
 
     def __str__(self):
-        return self.tag
+        return self.slug
+    
+    def __repr__(self):
+        return f"<Tag={self.slug}>"
     
     
 class Lesson(models.Model):
@@ -76,3 +81,6 @@ class Document(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents', blank=True, null=True)
     students = models.ManyToManyField(User, blank=True, related_name='document_students')
     tags = models.ManyToManyField(Tag, blank=True, related_name='document_tags')
+
+    class Meta:
+        ordering = ['-uploaded_at']

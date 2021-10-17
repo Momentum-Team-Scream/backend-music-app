@@ -115,9 +115,11 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             )
 
 class StudioSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
+    
     class Meta:
         model = User
-        fields = ("pk", "first_name", "last_name", "username", "email")
+        fields = ("pk", 'created_at', "first_name", "last_name", "username", "email")
 
 
 class PracticeLogSerializer(serializers.ModelSerializer):
@@ -149,26 +151,27 @@ class StudentSignupSerializer(serializers.ModelSerializer):
             "emergency_contact_name", 
             "emergency_contact_phone"
         )
-        
+
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = '__all__'
+        fields = ("pk", "slug", "created_by")
 
 
-# class SendEmailSerializer(serializers.ModelSerializer):
-#     queryset = User.objects.all()
-#     email = User.email
+class SendEmailSerializer(serializers.ModelSerializer):
+    queryset = User.objects.all()
+    email = User.email
 
-#     class Meta:
-#         model = User
-#         fields = (
-#             'username',
-#             'email',
-#             'pk',
-#         )
-#         read_only = (
-#             'username',
-#             'pk',
-#         )
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'pk',
+        )
+        read_only = (
+            'username',
+            'pk',
+        )
+
