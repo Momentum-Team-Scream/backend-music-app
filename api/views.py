@@ -127,21 +127,6 @@ class NoteViewSet(ModelViewSet):
         serializer.save()
 
 
-# Listing Instructor Studio
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def list_students(request):
-#     if not (request.user.is_authenticated and request.user.is_instructor):
-#         return HttpResponse(status=403) 
-#     students = request.user.students.all()
-#     output = {}
-#     output["instructor"] = UserSerializer(request.user).data
-#     output["students"] = []
-#     for student in students:
-#         serializer = StudentProfileSerializer(student, context={'request': request})
-#         output["students"].append(serializer.data)
-#     return JsonResponse(output)
-
 class StudioViewSet (ListAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsInstructorOfStudent]

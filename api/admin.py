@@ -24,4 +24,4 @@ class DocumentAdmin(admin.ModelAdmin):
     
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'created_by']
+    list_display = ['pk', 'slug', 'created_by']
