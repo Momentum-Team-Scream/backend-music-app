@@ -44,5 +44,6 @@ urlpatterns = [
     path('api/documents/<int:pk>/', api_views.DocumentDetailViewSet.as_view({'get': 'retrieve', 'delete': 'destroy', 'patch': 'partial_update'}), name='document-details'),
     path('api/documents/<int:pk>/upload/', api_views.FileUploadView.as_view(), name='document-update'),
     path('api/users/students/<int:pk>/', api_views.StudentSignupViewSet.as_view({'post': 'create'}), name='student-signup'),
+    path('api/mail/send/', api_views.EmailViewSet.as_view(), name='send-email'),
     #path('api/tags/', api_views.AddTagView.as_view({'get': 'list', 'post': 'create'}, ), name='add-tag'),
 ]

@@ -1,7 +1,10 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
+from django.db.models.query import QuerySet
 from rest_framework import serializers
 from .models import Document, Lesson, Note, PracticeLog, Tag, User
+from django.core.mail import send_mail
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -160,3 +163,9 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ("pk", "slug", "created_by")
+
+
+class EmailCreateSerializer(serializers.Serializer): 
+    email = serializers.EmailField(write_only=True)
+    instructor_url = serializers.URLField()
+    name = serializers.CharField(max_length=100)

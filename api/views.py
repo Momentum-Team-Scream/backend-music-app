@@ -5,11 +5,12 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.contrib.postgres.search import SearchVector
+from rest_framework.serializers import Serializer
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets, serializers, views
 
 from datetime import date, datetime
 from django.http import JsonResponse, HttpResponse
@@ -21,8 +22,8 @@ from rest_framework.response import Response
 
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
-from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
-
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer, EmailCreateSerializer
+from django.core.mail import send_mail, EmailMessage
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -230,6 +231,26 @@ class TagView(ModelViewSet):
     serializer_class = TagSerializer
 
 
+class EmailViewSet(CreateAPIView):
+    serializer_class = EmailCreateSerializer()
+
+    def post(self, request, *args, **kwargs):
+        serializer = EmailCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            email = data.get('email')
+            name = data.get('name')
+            instructor_url = data.get('instructor_url')
+            send_mail(
+                'Hi, {} sign up for NoteJAM!'.format(name),
+                'Here is your personalized link to sign up with your instructor: {}'.format(instructor_url),
+                'Notejammin@gmail.com',
+                [email,],
+                fail_silently=False,
+            )
+            return Response({"success": "Sent"})
+        return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
+        
 class RemoveStudentFromStudio(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
@@ -239,3 +260,4 @@ class RemoveStudentFromStudio(RetrieveUpdateDestroyAPIView):
         kwargs['partial'] = True
         student = get_object_or_404(User, pk=self.kwargs.get('pk'))
         return self.update(request, student, *args, **kwargs,)
+
