@@ -3,6 +3,8 @@ from django.db.models.deletion import CASCADE
 from django.db.models.query import QuerySet
 from rest_framework import serializers
 from .models import Document, Lesson, Note, PracticeLog, Tag, User
+from django.core.mail import send_mail
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -159,19 +161,42 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ("pk", "slug", "created_by")
 
 
-class SendEmailSerializer(serializers.ModelSerializer):
-    queryset = User.objects.all()
-    email = User.email
-
+class EmailCreateSerializer(serializers.ModelSerializer): 
     class Meta:
         model = User
-        fields = (
+        fields = [
             'username',
             'email',
-            'pk',
+        ]
+
+    def create(self, validate_data):
+        instance = super(EmailCreateSerializer, self).create(validate_data)
+        send_mail(
+            'Instance {} has been created'.format(instance.pk),
+            'message message message. DATA: {}'.format(validate_data),
+            'Notejammin@gmail.com',
+            ['Connorh223@gmail.com'],
+            fail_silently=False,
         )
-        read_only = (
-            'username',
-            'pk',
-        )
+        return instance
+
+
+
+
+
+# class SendEmailSerializer(serializers.ModelSerializer):
+#     queryset = User.objects.all()
+#     email = User.email
+
+#     class Meta:
+#         model = User
+#         fields = (
+#             'username',
+#             'email',
+#             'pk',
+#         )
+#         read_only = (
+#             'username',
+#             'pk',
+#         )
 

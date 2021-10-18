@@ -5,11 +5,12 @@ from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.contrib.postgres.search import SearchVector
+from rest_framework.serializers import Serializer
 
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, serializers, views
 
 from datetime import date, datetime
 from django.http import JsonResponse, HttpResponse
@@ -21,7 +22,7 @@ from rest_framework.response import Response
 
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
-from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer
+from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer, EmailCreateSerializer
 
 from django.core.mail import send_mail, EmailMessage
 class UserViewSet(DjoserUserViewSet):
@@ -242,24 +243,58 @@ class TagView(ModelViewSet):
 
 
 
-class SendEmailViewSet(viewsets.ViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer()
+# class SendEmailViewSet(viewsets.ViewSet):
 
-    def send_email():
-        email = EmailMessage(
-            'Title',
-            (UserSerializer.email),
-            'Notejammin@gmail.com',
-            ['Notejammin@gmail.com']
-        )
-        email.save(email)
-        email.send()
-        return email(serializer.data)
+#     def send_email():
+#         email = EmailMessage(
+#             'Hello',
+#             'Body goes here',
+#             'Notejammin@gmail.com',
+#             ['Notejammin@gmail.com']
+#         )
+#         email.save(email)
+#         email.send()
+#         return email
 
-    def create(self, request, *args, **kwargs):
-        response = super(SendEmailViewSet, self).create(request, *args, **kwargs)
-        self.send_email  # sending mail
-        return response()
+#     def create(self, request, *args, **kwargs):
+#         # breakpoint()
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         self.send_email  # sending mail
+#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    # def get_serializer
+
+class EmailViewSet(ModelViewSet):
+    serializer_class = EmailCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = EmailCreateSerializer(request.data)
+        if serializer.is_valid():
+            data = serializer.validated_data
+            email = data.get('email')
+            first_name = data.get('first_name')
+            send_mail(
+                'Sent email from {}'.format(first_name),
+                'Here is the message. {}'.format(data.get('message')),
+                email,
+                ['to@example.com'],
+                fail_silently=False,
+            )
+            return Response({"success": "Sent"})
+        return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    # def get_serializer_class(self):
+    #     serializer_class = UserSerializer(data=self.request.data)
+
+    #     return serializer_class
