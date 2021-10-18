@@ -75,7 +75,6 @@ class LessonViewSet(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# #Lists student lessons for instructor to view
 class StudentLessonsListViewSet(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = StudentLessonSerializer
@@ -133,10 +132,10 @@ class StudioViewSet (ListAPIView):
     serializer_class = StudioSerializer
 
     def get_queryset(self):
-        queryset = self.request.user.students.all()
+        queryset = self.request.user.students.filter(active_in_studio=True)
         if self.request.query_params.get("search"):
             search_term = self.request.query_params.get("search")
-            queryset = self.request.user.students.all().annotate(search=SearchVector('first_name', 'last_name', 'username')).filter(search__icontains=search_term)
+            queryset = self.request.user.students.filter(active_in_studio=True).annotate(search=SearchVector('first_name', 'last_name', 'username')).filter(search__icontains=search_term)
             return queryset
         return queryset
 
@@ -224,7 +223,19 @@ class DocumentDetailViewSet(ModelViewSet):
             return self.update(request, title, students, *args, **kwargs,)
         return self.update(request, title, *args, **kwargs,)
 
+
 class TagView(ModelViewSet):
     queryset = Tag.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = TagSerializer
+
+
+class RemoveStudentFromStudio(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = StudentProfileSerializer
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        student = get_object_or_404(User, pk=self.kwargs.get('pk'))
+        return self.update(request, student, *args, **kwargs,)
