@@ -19,6 +19,9 @@ class User(AbstractUser):
     instructor = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='students')
     is_instructor = models.BooleanField(default=True)
 
+    class Meta:
+        ordering = ['last_name']
+
     def __repr__(self):
         return f"<User username={self.username}>"
 
