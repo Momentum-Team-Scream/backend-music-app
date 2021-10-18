@@ -190,4 +190,4 @@ DEFAULT_FILE_STORAGE = 'music.storage_backends.MediaStorage'
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 DEFAULT_FROM_EMAIL = "Notejammin@gmail.com"
-# SENDGRID_SANDBOX_MODE_IN_DEBUG=True
+SENDGRID_SANDBOX_MODE_IN_DEBUG=False

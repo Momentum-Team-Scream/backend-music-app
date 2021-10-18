@@ -266,24 +266,56 @@ class TagView(ModelViewSet):
 #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class EmailViewSet(ModelViewSet):
-    serializer_class = EmailCreateSerializer
+class EmailViewSet(CreateAPIView):
+    serializer_class = EmailCreateSerializer()
 
     def post(self, request, *args, **kwargs):
-        serializer = EmailCreateSerializer(request.data)
+        serializer = EmailCreateSerializer(data=request.data)
+        # breakpoint()
         if serializer.is_valid():
             data = serializer.validated_data
-            email = data.get('email')
-            first_name = data.get('first_name')
+            email = data.get(self, 'email')
+            # breakpoint()
             send_mail(
-                'Sent email from {}'.format(first_name),
-                'Here is the message. {}'.format(data.get('message')),
-                email,
-                ['to@example.com'],
+                'Subject',
+                'IT WORRRKKKSSS',
+                'Notejammin@gmail.com',
+                # ^from
+                ['Connorh223@gmail.com'],
+                # ^to
                 fail_silently=False,
             )
+            # breakpoint()
             return Response({"success": "Sent"})
         return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
+# def post(self, request, *args, **kwargs):
+#         serializer = EmailCreateSerializer(data=request.data)
+#         # breakpoint()
+#         if serializer.is_valid():
+#             data = serializer.validated_data
+#             email = data.get(self, 'email')
+#             breakpoint()
+#             send_mail(
+#                 'Subject',
+#                 'Message',
+#                 'Notejammin@gmail.com',
+#                 # ^from
+#                 ['Connorh223@gmail.com'],
+#                 # ^to
+#                 fail_silently=False,
+#             )
+            
+#             return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
+#         return Response({"success": "Sent"})
+
+# 'Sent email from {}'.format(first_name),
+#                 'Here is the message. {}'.format(data.get('message')),
+#                 email,
+#                 ['Connorh223@gmail.com'],
         
 
 

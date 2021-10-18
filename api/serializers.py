@@ -161,25 +161,8 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ("pk", "slug", "created_by")
 
 
-class EmailCreateSerializer(serializers.ModelSerializer): 
-    class Meta:
-        model = User
-        fields = [
-            'username',
-            'email',
-        ]
-
-    def create(self, validate_data):
-        instance = super(EmailCreateSerializer, self).create(validate_data)
-        send_mail(
-            'Instance {} has been created'.format(instance.pk),
-            'message message message. DATA: {}'.format(validate_data),
-            'Notejammin@gmail.com',
-            ['Connorh223@gmail.com'],
-            fail_silently=False,
-        )
-        return instance
-
+class EmailCreateSerializer(serializers.Serializer): 
+    email = serializers.EmailField(write_only=True)
 
 
 
