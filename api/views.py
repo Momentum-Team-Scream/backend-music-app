@@ -77,7 +77,6 @@ class LessonViewSet(ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# #Lists student lessons for instructor to view
 class StudentLessonsListViewSet(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = StudentLessonSerializer
@@ -129,31 +128,16 @@ class NoteViewSet(ModelViewSet):
         serializer.save()
 
 
-# Listing Instructor Studio
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def list_students(request):
-#     if not (request.user.is_authenticated and request.user.is_instructor):
-#         return HttpResponse(status=403) 
-#     students = request.user.students.all()
-#     output = {}
-#     output["instructor"] = UserSerializer(request.user).data
-#     output["students"] = []
-#     for student in students:
-#         serializer = StudentProfileSerializer(student, context={'request': request})
-#         output["students"].append(serializer.data)
-#     return JsonResponse(output)
-
 class StudioViewSet (ListAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated, IsInstructorOfStudent]
     serializer_class = StudioSerializer
 
     def get_queryset(self):
-        queryset = self.request.user.students.all()
+        queryset = self.request.user.students.filter(active_in_studio=True)
         if self.request.query_params.get("search"):
             search_term = self.request.query_params.get("search")
-            queryset = self.request.user.students.all().annotate(search=SearchVector('first_name', 'last_name', 'username')).filter(search__icontains=search_term)
+            queryset = self.request.user.students.filter(active_in_studio=True).annotate(search=SearchVector('first_name', 'last_name', 'username')).filter(search__icontains=search_term)
             return queryset
         return queryset
 
@@ -173,6 +157,11 @@ class DocumentCreateView(ModelViewSet):
     serializer_class = DocumentSerializer
 
     def get_queryset(self):
+        queryset = self.request.user.documents.all()
+        if self.request.query_params.get("search"):
+            search_term = self.request.query_params.get("search")
+            queryset = self.request.user.documents.all().annotate(search=SearchVector('title', 'students', 'tags')).filter(search__icontains=search_term)
+            return queryset
         if self.request.user.is_instructor == True:
             queryset = Document.objects.filter(author=self.request.user)
         if self.request.user.is_instructor == False:
@@ -236,34 +225,11 @@ class DocumentDetailViewSet(ModelViewSet):
             return self.update(request, title, students, *args, **kwargs,)
         return self.update(request, title, *args, **kwargs,)
 
+
 class TagView(ModelViewSet):
     queryset = Tag.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = TagSerializer
-
-
-
-# class SendEmailViewSet(viewsets.ViewSet):
-
-#     def send_email():
-#         email = EmailMessage(
-#             'Hello',
-#             'Body goes here',
-#             'Notejammin@gmail.com',
-#             ['Notejammin@gmail.com']
-#         )
-#         email.save(email)
-#         email.send()
-#         return email
-
-#     def create(self, request, *args, **kwargs):
-#         # breakpoint()
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_create(serializer)
-#         headers = self.get_success_headers(serializer.data)
-#         self.send_email  # sending mail
-#         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class EmailViewSet(CreateAPIView):
@@ -271,11 +237,9 @@ class EmailViewSet(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = EmailCreateSerializer(data=request.data)
-        # breakpoint()
         if serializer.is_valid():
             data = serializer.validated_data
             email = data.get(self, 'email')
-            # breakpoint()
             send_mail(
                 'Subject',
                 'IT WORRRKKKSSS',
@@ -289,44 +253,13 @@ class EmailViewSet(CreateAPIView):
             return Response({"success": "Sent"})
         return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
         
+class RemoveStudentFromStudio(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = StudentProfileSerializer
 
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        student = get_object_or_404(User, pk=self.kwargs.get('pk'))
+        return self.update(request, student, *args, **kwargs,)
 
-
-# def post(self, request, *args, **kwargs):
-#         serializer = EmailCreateSerializer(data=request.data)
-#         # breakpoint()
-#         if serializer.is_valid():
-#             data = serializer.validated_data
-#             email = data.get(self, 'email')
-#             breakpoint()
-#             send_mail(
-#                 'Subject',
-#                 'Message',
-#                 'Notejammin@gmail.com',
-#                 # ^from
-#                 ['Connorh223@gmail.com'],
-#                 # ^to
-#                 fail_silently=False,
-#             )
-            
-#             return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
-#         return Response({"success": "Sent"})
-
-# 'Sent email from {}'.format(first_name),
-#                 'Here is the message. {}'.format(data.get('message')),
-#                 email,
-#                 ['Connorh223@gmail.com'],
-        
-
-
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    # def get_serializer_class(self):
-    #     serializer_class = UserSerializer(data=self.request.data)
-
-    #     return serializer_class

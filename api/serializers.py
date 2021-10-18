@@ -112,16 +112,17 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "email",
             "phone", 
             "instructor",
+            "active_in_studio",
             "emergency_contact_name",
             "emergency_contact_phone",
             )
 
+
 class StudioSerializer(serializers.ModelSerializer):
-    created_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
-    
+    created_at = serializers.DateTimeField(format='%b. %d, %Y', read_only=True)
     class Meta:
         model = User
-        fields = ("pk", 'created_at', "first_name", "last_name", "username", "email")
+        fields = ("pk", "first_name", "last_name", "username", "email", "phone", "created_at")
 
 
 class PracticeLogSerializer(serializers.ModelSerializer):
@@ -134,6 +135,9 @@ class PracticeLogSerializer(serializers.ModelSerializer):
 
 class DocumentSerializer(serializers.ModelSerializer):
     uploaded_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
+    author = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    # tags = serializers.SlugRelatedField(slug_field='slug', many=True, read_only=True)
+    # students = serializers.SlugRelatedField(slug_field='username', many=True, read_only=True)
     class Meta:
         model = Document
         fields = ('pk', 'uploaded_at', 'title', 'upload', 'author', 'students', 'tags')

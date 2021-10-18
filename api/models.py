@@ -19,6 +19,10 @@ class User(AbstractUser):
     emergency_contact_phone =  models.CharField(validators=[phone_regex], max_length=17) 
     instructor = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='students')
     is_instructor = models.BooleanField(default=True)
+    active_in_studio = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['last_name']
 
     def __repr__(self):
         return f"<User username={self.username}>"

@@ -38,6 +38,7 @@ urlpatterns = [
     path('api/lessons/<int:pk>/', api_views.LessonDetailViewSet.as_view(), name='lesson-detail'), 
     path('api/assignments/<int:student_pk>/previous/<int:pk>/', api_views.PreviousLessonViewSet.as_view(), name='lesson-previous'), 
     path('instructor/studio/', api_views.StudioViewSet.as_view(), name='instructor-studio'),
+    path('instructor/studio/<int:pk>/', api_views.RemoveStudentFromStudio.as_view(), name='instructor-remove'),
     path('api/users/<int:pk>/', api_views.SharedProfileViewSet.as_view({'get': 'retrieve'}), name='shared-profile'),
     path('api/documents/', api_views.DocumentCreateView.as_view({'get': 'list', 'post': 'create'}), name='documents-create'),
     path('api/documents/<int:pk>/', api_views.DocumentDetailViewSet.as_view({'get': 'retrieve', 'delete': 'destroy', 'patch': 'partial_update'}), name='document-details'),
