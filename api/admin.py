@@ -4,11 +4,11 @@ from .models import Document, PracticeLog, Tag, User, Lesson, Note
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'username', 'first_name', 'last_name', 'is_instructor']
+    list_display = ['pk', 'username', 'first_name', 'last_name', 'is_instructor', 'instructor', 'active_in_studio']
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'lesson_date', 'student', 'plan']
+    list_display = ['pk', 'lesson_date', 'lesson_time', 'student', 'plan']
     
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
