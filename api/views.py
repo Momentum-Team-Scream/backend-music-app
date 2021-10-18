@@ -23,7 +23,6 @@ from rest_framework.response import Response
 from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
 from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer, EmailCreateSerializer
-
 from django.core.mail import send_mail, EmailMessage
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
@@ -239,17 +238,16 @@ class EmailViewSet(CreateAPIView):
         serializer = EmailCreateSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.validated_data
-            email = data.get(self, 'email')
+            email = data.get('email')
+            name = data.get('name')
+            instructor_url = data.get('instructor_url')
             send_mail(
-                'Subject',
-                'IT WORRRKKKSSS',
+                'Hi, {} sign up for NoteJAM!'.format(name),
+                'Here is your personalized link to sign up with your instructor: {}'.format(instructor_url),
                 'Notejammin@gmail.com',
-                # ^from
-                ['Connorh223@gmail.com'],
-                # ^to
+                [email,],
                 fail_silently=False,
             )
-            # breakpoint()
             return Response({"success": "Sent"})
         return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
         

@@ -167,23 +167,5 @@ class TagSerializer(serializers.ModelSerializer):
 
 class EmailCreateSerializer(serializers.Serializer): 
     email = serializers.EmailField(write_only=True)
-
-
-
-
-# class SendEmailSerializer(serializers.ModelSerializer):
-#     queryset = User.objects.all()
-#     email = User.email
-
-#     class Meta:
-#         model = User
-#         fields = (
-#             'username',
-#             'email',
-#             'pk',
-#         )
-#         read_only = (
-#             'username',
-#             'pk',
-#         )
-
+    instructor_url = serializers.URLField()
+    name = serializers.CharField(max_length=100)
