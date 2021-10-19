@@ -1,10 +1,5 @@
-from django.db import models
-from django.db.models.deletion import CASCADE
-from django.db.models.query import QuerySet
 from rest_framework import serializers
 from .models import Document, Lesson, Note, PracticeLog, Tag, User
-from django.core.mail import send_mail
-
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -63,7 +58,6 @@ class LessonSerializer(serializers.ModelSerializer):
     def combined_student_name (self, obj):
         student_name = '{} {}'.format(obj.student.first_name, obj.student.last_name) 
         return student_name
-
     class Meta:
         model = Lesson
         fields = (
@@ -80,7 +74,6 @@ class LessonSerializer(serializers.ModelSerializer):
 
 class ListLessonsSerializer(serializers.ModelSerializer):
     student_name = serializers.SerializerMethodField('combined_student_name')
-    # lesson_date = serializers.SerializerMethodField('combined_lesson_date_time')
     lesson_date = serializers.DateField(format='%b. %d, %Y')
     lesson_time = serializers.TimeField(format='%-I:%M%p')
 
@@ -136,8 +129,6 @@ class PracticeLogSerializer(serializers.ModelSerializer):
 class DocumentSerializer(serializers.ModelSerializer):
     uploaded_at = serializers.DateTimeField(format='%b. %d, %Y at %-I:%M%p', read_only=True)
     author = serializers.SlugRelatedField(slug_field="username", read_only=True)
-    # tags = serializers.SlugRelatedField(slug_field='slug', many=True, read_only=True)
-    # students = serializers.SlugRelatedField(slug_field='username', many=True, read_only=True)
     class Meta:
         model = Document
         fields = ('pk', 'uploaded_at', 'title', 'upload', 'author', 'students', 'tags')

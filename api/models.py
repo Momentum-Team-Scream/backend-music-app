@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MaxLengthValidator, MinLengthValidator, MinValueValidator, RegexValidator
+from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 
@@ -25,7 +25,7 @@ class User(AbstractUser):
         ordering = ['last_name']
 
     def __repr__(self):
-        return f"<User username={self.username}>"
+        return f"{self.username}"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -40,8 +40,8 @@ class Tag(models.Model):
     
     def __repr__(self):
         return f"<Tag={self.slug}>"
-    
-    
+
+
 class Lesson(models.Model):
     lesson_date = models.DateField(auto_now_add=False, auto_now=False)
     lesson_time = models.TimeField(auto_now_add=False, auto_now=False)
@@ -71,12 +71,12 @@ class PracticeLog(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, related_name='practice')
     time_practiced = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True,)
-
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.body}"
+
 
 class Document(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
@@ -85,6 +85,5 @@ class Document(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents', blank=True, null=True)
     students = models.ManyToManyField(User, blank=True, related_name='document_students')
     tags = models.ManyToManyField(Tag, blank=True, related_name='document_tags')
-
     class Meta:
         ordering = ['-uploaded_at']

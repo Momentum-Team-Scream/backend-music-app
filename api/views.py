@@ -1,33 +1,28 @@
-from django.http import request
-from django.shortcuts import get_object_or_404, render
+from datetime import date
 
 from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
-from django.contrib.postgres.search import SearchVector
-from rest_framework.serializers import Serializer
 
-from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from django.contrib.postgres.search import SearchVector
+
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework import status, viewsets, serializers, views
-
-from datetime import date, datetime
-from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import action, api_view, permission_classes
-
+from rest_framework import status
 from rest_framework.exceptions import ParseError
-from rest_framework.parsers import FileUploadParser, JSONParser
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 
-from .permissions import IsInstructorAndLessonOwner, IsInstructorOfStudent, IsStudentOwner, IsStudentofInstructor
+from .permissions import IsInstructorOfStudent
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
 from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer, EmailCreateSerializer
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail
+
+
 class UserViewSet(DjoserUserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         serializer_class = self.serializer_class
@@ -84,6 +79,7 @@ class StudentLessonsListViewSet(ListAPIView):
     def get_queryset(self):
         queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time')
         return queryset
+
 
 class PreviousLessonViewSet(ListAPIView):
     queryset = Lesson.objects.all()
@@ -185,6 +181,7 @@ class StudentSignupViewSet(ModelViewSet):
         user.set_password(self.request.data["password"])
         user.save()
 
+
 class FileUploadView(RetrieveUpdateAPIView):
     parser_class = (FileUploadParser,)
 
@@ -250,7 +247,8 @@ class EmailViewSet(CreateAPIView):
             )
             return Response({"success": "Sent"})
         return Response({'success':"Failed"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
 class RemoveStudentFromStudio(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]

@@ -8,7 +8,7 @@ class IsInstructorAndLessonOwner(permissions.BasePermission):
             return True
         return False
 
-# Beginning of permissions class to limit a student profile to only be visible by their instructor.
+
 class IsInstructorOfStudent(permissions.BasePermission):
     message = "Must be the instructor of this student."
     
@@ -42,6 +42,7 @@ class IsStudentofInstructor(permissions.BasePermission):
         if request.user in obj.author.students.all():
             return True
         return False
+
 
 class IsStudentOwner(permissions.BasePermission):
     def has_permission(self, request, view):
