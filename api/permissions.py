@@ -18,7 +18,6 @@ class IsInstructorOfStudent(permissions.BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        breakpoint()
         if request.user.is_superuser:
             return True
         if request.user.is_instructor == True:

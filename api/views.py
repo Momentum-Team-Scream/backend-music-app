@@ -1,11 +1,19 @@
-from datetime import date
+from datetime import date, timedelta
 
 from djoser.views import UserViewSet as DjoserUserViewSet
 
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.postgres.search import SearchVector
+from django.db.models import Q
 
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import (
+    CreateAPIView, 
+    ListAPIView, 
+    ListCreateAPIView, 
+    RetrieveUpdateAPIView, 
+    RetrieveUpdateDestroyAPIView
+    )
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -16,8 +24,23 @@ from rest_framework.response import Response
 
 from .permissions import IsInstructorOfStudent
 from .models import Document, PracticeLog, Tag, User, Lesson, Note
-from .serializers import AddLessonSerializer, DocumentSerializer, NoteSerializer, PracticeLogSerializer, StudentLessonSerializer, StudentProfileSerializer, StudentSignupSerializer, StudioSerializer, TagSerializer, UserSerializer, LessonSerializer, ListLessonsSerializer, ProfileSerializer, StudentSignupSerializer, EmailCreateSerializer
-from django.core.mail import send_mail
+from .serializers import (
+    AddLessonSerializer, 
+    DocumentSerializer, 
+    NoteSerializer, 
+    PracticeLogSerializer, 
+    StudentLessonSerializer, 
+    StudentProfileSerializer, 
+    StudentSignupSerializer, 
+    StudioSerializer, 
+    TagSerializer, 
+    UserSerializer, 
+    LessonSerializer, 
+    ListLessonsSerializer, 
+    ProfileSerializer, 
+    StudentSignupSerializer, 
+    EmailCreateSerializer
+    )
 
 
 class UserViewSet(DjoserUserViewSet):
@@ -88,7 +111,7 @@ class PreviousLessonViewSet(ListAPIView):
 
     def get_queryset(self):
         lesson = get_object_or_404(Lesson, pk=self.kwargs['pk']) 
-        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time').exclude(lesson_date__gt=lesson.lesson_date)[:5]
+        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).filter(Q (lesson_date__lt=lesson.lesson_date) | Q (lesson_time__lt=lesson.lesson_time)).order_by('-lesson_date', '-lesson_time')[:3]
         return queryset
 
 
