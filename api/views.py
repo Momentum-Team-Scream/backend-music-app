@@ -111,7 +111,7 @@ class PreviousLessonViewSet(ListAPIView):
 
     def get_queryset(self):
         lesson = get_object_or_404(Lesson, pk=self.kwargs['pk']) 
-        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).filter(Q (lesson_date__lt=lesson.lesson_date) | Q (lesson_time__lt=lesson.lesson_time)).order_by('-lesson_date', '-lesson_time')[:3]
+        queryset = Lesson.objects.filter(student=self.kwargs['student_pk']).order_by('-lesson_date', '-lesson_time').exclude(lesson_date__gt=lesson.lesson_date)[:5]
         return queryset
 
 
