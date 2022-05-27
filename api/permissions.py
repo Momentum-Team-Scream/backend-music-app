@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class IsInstructorAndLessonOwner(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_instructor == True:
@@ -11,7 +12,7 @@ class IsInstructorAndLessonOwner(permissions.BasePermission):
 
 class IsInstructorOfStudent(permissions.BasePermission):
     message = "Must be the instructor of this student."
-    
+
     def has_permission(self, request, view):
         if request.user.is_authenticated:
             return True
@@ -34,7 +35,7 @@ class IsStudentofInstructor(permissions.BasePermission):
         if request.user.is_authenticated:
             return True
         return False
-    
+
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
@@ -48,7 +49,7 @@ class IsStudentOwner(permissions.BasePermission):
         if request.user.is_authenticated:
             return True
         return False
-        
+
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
