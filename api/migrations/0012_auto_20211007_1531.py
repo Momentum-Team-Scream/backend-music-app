@@ -8,17 +8,23 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0011_merge_0009_user_instructor_0010_alter_lesson_student'),
+        ("api", "0011_merge_0009_user_instructor_0010_alter_lesson_student"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='lesson',
-            options={'ordering': ['lesson_date', 'lesson_time']},
+            name="lesson",
+            options={"ordering": ["lesson_date", "lesson_time"]},
         ),
         migrations.AlterField(
-            model_name='user',
-            name='instructor',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='students', to=settings.AUTH_USER_MODEL),
+            model_name="user",
+            name="instructor",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="students",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

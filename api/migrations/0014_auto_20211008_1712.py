@@ -8,17 +8,22 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0013_practicelog'),
+        ("api", "0013_practicelog"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='practicelog',
-            options={'ordering': ['-created_at']},
+            name="practicelog",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.AlterField(
-            model_name='practicelog',
-            name='author',
-            field=models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='practice', to=settings.AUTH_USER_MODEL),
+            model_name="practicelog",
+            name="author",
+            field=models.ForeignKey(
+                blank=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="practice",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

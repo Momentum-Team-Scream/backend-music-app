@@ -8,31 +8,50 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0016_document_author'),
+        ("api", "0016_document_author"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('tag', models.CharField(max_length=100, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("tag", models.CharField(max_length=100, unique=True)),
             ],
         ),
         migrations.AddField(
-            model_name='document',
-            name='students',
-            field=models.ManyToManyField(blank=True, related_name='document_students', to=settings.AUTH_USER_MODEL),
+            model_name="document",
+            name="students",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="document_students",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='document',
-            name='author',
-            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, related_name='documents', to='api.user'),
+            model_name="document",
+            name="author",
+            field=models.ForeignKey(
+                default=2,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="documents",
+                to="api.user",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='document',
-            name='tags',
-            field=models.ManyToManyField(blank=True, related_name='document_tags', to='api.Tag'),
+            model_name="document",
+            name="tags",
+            field=models.ManyToManyField(
+                blank=True, related_name="document_tags", to="api.Tag"
+            ),
         ),
     ]

@@ -8,13 +8,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0008_auto_20211006_1024'),
+        ("api", "0008_auto_20211006_1024"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='instructor',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='students', to=settings.AUTH_USER_MODEL),
+            model_name="user",
+            name="instructor",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="students",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]
