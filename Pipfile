@@ -16,6 +16,7 @@ gunicorn = "*"
 boto3 = "*"
 django-storages = "*"
 sendgrid = "*"
+black = "*"
 
 [dev-packages]
 black = "*"
