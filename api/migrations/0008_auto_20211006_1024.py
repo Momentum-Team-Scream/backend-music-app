@@ -7,19 +7,19 @@ import django.utils.timezone
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0007_merge_20211006_1022'),
+        ("api", "0007_merge_20211006_1022"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='lesson',
-            name='lesson_time',
+            model_name="lesson",
+            name="lesson_time",
             field=models.TimeField(default=django.utils.timezone.now),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='lesson',
-            name='lesson_date',
+            model_name="lesson",
+            name="lesson_date",
             field=models.DateField(),
         ),
     ]

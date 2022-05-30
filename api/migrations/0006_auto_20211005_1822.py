@@ -8,37 +8,50 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0005_merge_20211005_1734'),
+        ("api", "0005_merge_20211005_1734"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='lesson',
-            options={'ordering': ['lesson_date']},
+            name="lesson",
+            options={"ordering": ["lesson_date"]},
         ),
         migrations.AddField(
-            model_name='user',
-            name='phone',
-            field=models.CharField(blank=True, max_length=17, validators=[django.core.validators.RegexValidator(message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.", regex='^\\+?1?\\d{9,15}$')]),
+            model_name="user",
+            name="phone",
+            field=models.CharField(
+                blank=True,
+                max_length=17,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.",
+                        regex="^\\+?1?\\d{9,15}$",
+                    )
+                ],
+            ),
         ),
         migrations.AlterField(
-            model_name='note',
-            name='lesson',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='note', to='api.lesson'),
+            model_name="note",
+            name="lesson",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="note",
+                to="api.lesson",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='emergency_contact_name',
+            model_name="user",
+            name="emergency_contact_name",
             field=models.CharField(max_length=255),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='first_name',
+            model_name="user",
+            name="first_name",
             field=models.CharField(max_length=255),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='last_name',
+            model_name="user",
+            name="last_name",
             field=models.CharField(max_length=255),
         ),
     ]

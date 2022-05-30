@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0023_alter_document_options'),
+        ("api", "0023_alter_document_options"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
-            options={'ordering': ['last_name']},
+            name="user",
+            options={"ordering": ["last_name"]},
         ),
         migrations.AddField(
-            model_name='user',
-            name='active_in_studio',
+            model_name="user",
+            name="active_in_studio",
             field=models.BooleanField(default=True),
         ),
     ]

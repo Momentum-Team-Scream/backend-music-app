@@ -7,14 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0009_alter_lesson_student'),
+        ("api", "0009_alter_lesson_student"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='lesson',
-            name='student',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='lesson', to='api.user'),
+            model_name="lesson",
+            name="student",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="lesson",
+                to="api.user",
+            ),
             preserve_default=False,
         ),
     ]

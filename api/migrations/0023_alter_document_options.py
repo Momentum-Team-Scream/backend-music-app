@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0022_merge_0019_auto_20211016_1443_0021_auto_20211016_1243'),
+        ("api", "0022_merge_0019_auto_20211016_1443_0021_auto_20211016_1243"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='document',
-            options={'ordering': ['-uploaded_at']},
+            name="document",
+            options={"ordering": ["-uploaded_at"]},
         ),
     ]

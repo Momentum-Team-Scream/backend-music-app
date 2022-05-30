@@ -7,23 +7,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0020_auto_20211016_1240'),
+        ("api", "0020_auto_20211016_1240"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='tag',
-            old_name='tag',
-            new_name='slug',
+            model_name="tag",
+            old_name="tag",
+            new_name="slug",
         ),
         migrations.AlterField(
-            model_name='document',
-            name='students',
-            field=models.ManyToManyField(blank=True, related_name='document_students', to=settings.AUTH_USER_MODEL),
+            model_name="document",
+            name="students",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="document_students",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='document',
-            name='tags',
-            field=models.ManyToManyField(blank=True, related_name='document_tags', to='api.Tag'),
+            model_name="document",
+            name="tags",
+            field=models.ManyToManyField(
+                blank=True, related_name="document_tags", to="api.Tag"
+            ),
         ),
     ]
